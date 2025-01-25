@@ -35,3 +35,7 @@ DB_PASS =
 
 Install Python Dependencies
 pip install -r requirements.txt
+
+open the folder (DBT) in VScode.
+run retail_pg/orchestrator.py file to start the project.
+click start Evidence to visualize the results
