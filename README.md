@@ -8,6 +8,15 @@ A data pipeline that automates **Star Wars starships data** ingestion, transform
 
 ---
 
+## 📋 Table of Contents
+- [Project Overview](#-project-overview)
+- [Features](#-features)
+- [Setup Instructions](#-setup-instructions)
+- [Directory Structure](#-directory-structure)
+- [Visualization](#-visualization)
+- [License](#-license)
+
+---
 
 ## 🚀 Project Overview
 
@@ -39,21 +48,65 @@ This project automates the extraction of Star Wars starships data from the **SWA
 ```bash
 git clone https://github.com/wasimshoman/DBT.git
 cd DBT
-## 🛠️ Setup Instructions
+```
 
 ### 2. Create PostgreSQL Database 🗄️
-Run this SQL command in your PostgreSQL client (e.g., `psql`, pgAdmin, or DBeaver):
+Run this SQL command in your PostgreSQL client:
 ```sql
 CREATE DATABASE test_db;
+```
 
-### 3. Configure Database Credentials  🗄️
-Update the connection settings in APIcaller.py to match your PostgreSQL instance:
-# 📁 APIcaller.py
-DB_HOST = "your_host"      # e.g., "localhost" or "127.0.0.1"
-DB_NAME = "test_db"        # Database name (keep as test_db)
+### 3. Configure Database Credentials 🔐
+Update `APIcaller.py` with your PostgreSQL credentials:
+```python
+DB_HOST = "your_host"      # e.g., "localhost"
+DB_NAME = "test_db"        # Database name
 DB_USER = "your_user"      # e.g., "postgres"
 DB_PASS = "your_password"  # Your PostgreSQL password
+```
 
-### 3. Install Dependencies  🗄️
-Install required Python packages using:
+### 4. Install Dependencies 📦
+```bash
 pip install -r requirements.txt
+```
+
+### 5. Run the Pipeline 🚀
+```bash
+python retail_pg/orchestrator.py
+```
+
+### 6. Access Visualizations 📊
+Navigate to the `evidence_visualization` folder and open the provided files (e.g., Jupyter notebooks or HTML reports).
+
+---
+
+## 📂 Directory Structure
+```
+DBT/
+├── retail_pg/
+│   ├── orchestrator.py       # Pipeline orchestrator
+│   └── APIcaller.py          # SWAPI data fetcher
+├── models/                   # DBT models (SQL + Jinja)
+├── evidence_visualization/   # Charts/dashboards
+├── requirements.txt          # Python dependencies
+└── README.md
+```
+
+---
+
+## 📊 Visualization
+After running the pipeline:
+1. Open the `evidence_visualization` folder in VS Code.
+2. Launch the provided visualization files (e.g., `.ipynb` notebooks or `.html` dashboards).
+3. Click **Start Evidence** to explore results.
+
+![Sample Visualization](https://via.placeholder.com/600x400?text=Starships+Data+Visualization+Example)
+
+---
+
+## 📜 License
+This project is licensed under the MIT License. See [LICENSE](LICENSE) for details.
+
+---
+
+**Happy Data Engineering!** 👾🚀
