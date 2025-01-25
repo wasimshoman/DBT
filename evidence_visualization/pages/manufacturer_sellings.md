@@ -2,6 +2,8 @@
 ---
 title: Manufacturer sellings
 ---
+
+
 ```distinct_Manufacturer
   select
       *
@@ -25,7 +27,7 @@ select avg(selling_count) as avg from postgres.manufacturer_sellings
 
 
 <BarChart
-  title = 'Manufacturers contribute in building starships' 
+  title = 'Top 10 manufacturers contribute in building starships' 
   data={distinct_Manufacturer}
   x=manufacturer
   y=helped_in_building
