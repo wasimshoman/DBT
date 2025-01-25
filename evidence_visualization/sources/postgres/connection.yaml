@@ -1,0 +1,11 @@
+# This file was automatically generated
+type: postgres
+name: postgres
+options:
+  database: test_db
+  host: localhost
+  port: 5432
+  schema: ""
+# Advanced Options, you probably don't want to change this
+buildOptions:
+  batchSize: 1000000
