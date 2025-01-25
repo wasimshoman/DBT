@@ -4,19 +4,8 @@
 ![Python](https://img.shields.io/badge/python-3.13-blue?style=for-the-badge&logo=python)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql)
 
-A data pipeline that automates **Star Wars starships data** ingestion, transformation, and visualization using SWAPI, PostgreSQL, and DBT.
+A data pipeline that automates **Star Wars starships data** ingestion, transformation, and visualization using Python, SWAPI, PostgreSQL, and DBT.
 
----
-
-## 📋 Table of Contents
-- [Project Overview](#-project-overview)
-- [Features](#-features)
-- [Setup Instructions](#-setup-instructions)
-- [Directory Structure](#-directory-structure)
-- [Visualization](#-visualization)
-- [License](#-license)
-
----
 
 ## 🚀 Project Overview
 
@@ -24,7 +13,7 @@ This project automates the extraction of Star Wars starships data from the **SWA
 
 ### Key Components:
 - **Orchestrator Script**: Combines data ingestion (`APIcaller.py`) and DBT transformation.
-- **DBT Models**: SQL and Jinja transformations for creating tables/views.
+- **DBT Models**: SQL models for creating tables/views.
 - **Visualization**: Interactive dashboards or charts in the `evidence_visualization` folder.
 
 ---
@@ -40,7 +29,7 @@ This project automates the extraction of Star Wars starships data from the **SWA
 
 ### Prerequisites
 - Python 3.13
-- PostgreSQL (local or remote)
+- PostgreSQL 
 - [DBT CLI](https://docs.getdbt.com/dbt-cli/installation)
 - Git
 
@@ -86,7 +75,7 @@ DBT/
 ├── retail_pg/
 │   ├── orchestrator.py       # Pipeline orchestrator
 │   └── APIcaller.py          # SWAPI data fetcher
-├── models/                   # DBT models (SQL + Jinja)
+├   └── models/                   # DBT models (SQL + Jinja)
 ├── evidence_visualization/   # Charts/dashboards
 ├── requirements.txt          # Python dependencies
 └── README.md
@@ -97,10 +86,8 @@ DBT/
 ## 📊 Visualization
 After running the pipeline:
 1. Open the `evidence_visualization` folder in VS Code.
-2. Launch the provided visualization files (e.g., `.ipynb` notebooks or `.html` dashboards).
 3. Click **Start Evidence** to explore results.
 
-![Sample Visualization](https://via.placeholder.com/600x400?text=Starships+Data+Visualization+Example)
 
 ---
 
