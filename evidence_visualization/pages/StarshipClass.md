@@ -14,41 +14,65 @@ select avg(selling_count) as avg from postgres.class_details
 ```averageSpeed
 select avg(avg_atmosphering_speed) as avg from postgres.class_details
 ```
+
+```classifications
+select * from postgres.classifications
+
+```
+
 <BarChart
-  title = 'Seeling amount for starship models' 
+  title = 'Top 10 mosel selling amount for starship models' 
   data={class_details}
   x=starship_class
   y=selling_count
   xAxisTitle="Starship class"
-	yAxisTitle="Selling amount"
+	yAxisTitle="Selling count"
   xLabelWrap=true
-  color="#1f77b4" 
 >
   <ReferenceLine data={averageSellingAmount} y= avg label='average selling amount'/>
 </BarChart>
 
-<BarChart
-  title = 'Average seeling price for starship models' 
-  data={class_details}
-  x=starship_class
-  y=avg_selling_price
-  xAxisTitle="Starship class"
-	yAxisTitle="Average selling price"
-  xLabelWrap=true
-  color="#ff7f0e"
+<DataTable data={classifications}/>
+
+
+<BarChart 
+    title = 'Average selling price for starship models' 
+    data={classifications}
+    x=starship_class
+    y=avg_cost_in_credits
+    series=starship_group
+    seriesColors={{"large starships": "red", "medium starships": "blue","small starships": "black", 'null': 'gray'}}
+    xAxisTitle="Starship class"
+    yAxisTitle="Average selling price"
+    xLabelWrap=true
+    type=grouped
 />
+
 
 <ScatterPlot 
   title = 'Average atmosphering speed for starship models' 
-  data={class_details}
+  data={classifications}
   x=starship_class
-  y=avg_atmosphering_speed
+  y=avg_max_atmosphering_speed
+  series=starship_group
+  seriesColors={{"large starships": "red", "medium starships": "blue","small starships": "black", 'null': 'gray'}}
   xAxisTitle="Starship class"
-	yAxisTitle="Average atmosphering speed"
-  swapXY=true
+  yAxisTitle="Average atmosphering speed"
   xLabelWrap=true
-  color="#2ca02c" 
+  type=grouped
 >
   <ReferenceLine data={averageSpeed} y= avg label='average speed'/>
 </ScatterPlot>
 
+<ScatterPlot 
+  title = 'Average length for starship models' 
+  data={classifications}
+  x=starship_class
+  y=avg_length
+  series=speed_classification
+  seriesColors={{"high speed": "red", "medium speed": "blue","low speed": "black", 'null': 'gray'}}
+  xAxisTitle="Starship class"
+  yAxisTitle="Average ship length"
+  xLabelWrap=true
+  type=grouped
+/>
