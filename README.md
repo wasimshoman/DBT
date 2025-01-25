@@ -23,5 +23,15 @@ git clone https://github.com/wasimshoman/DBT.git
 cd DBT
 
 Create a PostgreSQL database:
-SQL
+
 CREATE DATABASE test_db;
+
+
+Update the database credentials in APIcaller.py:
+DB_HOST = 
+DB_NAME = 
+DB_USER = 
+DB_PASS = 
+
+Install Python Dependencies
+pip install -r requirements.txt
