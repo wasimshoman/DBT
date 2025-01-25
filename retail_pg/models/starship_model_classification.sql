@@ -31,7 +31,5 @@ select
 from cte_view)
 
 select * from cte_grouped
-order by starship_group is null, 
-    starship_group desc, 
-    speed_classification is null, 
-    speed_classification desc
+order by starship_group DESC NULLS LAST, 
+    speed_classification DESC NULLS LAST
