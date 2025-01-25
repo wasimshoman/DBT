@@ -1,0 +1,57 @@
+version: 2
+
+models:
+  - name: distinct_manufacturer
+    columns:
+      - name: manufacturer
+        tests:
+          - not_null:
+              severity: warn
+              config:
+                where: "helped_in_building > 0"
+          - unique:
+              severity: warn
+     
+  - name: class_details
+    columns:
+      - name: starship_class
+        tests:
+          - not_null
+          - unique
+          
+      - name: selling_count
+        tests:
+          - not_null
+          - not_negative
+  - name: manufacturer_sellings
+    columns:
+      - name: manufacturer1
+        tests:
+          - not_null
+  - name: starship_details
+    columns:
+      - name: starship_name
+        tests:
+          - not_null
+          - unique
+
+      - name: starship_class
+        tests:
+          - not_null
+  - name: starship_model_classification
+    columns:
+      - name: starship_class
+        tests:
+          - not_null
+          - unique
+      - name: starship_group
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['small starships', 'medium starships', 'large starships','null']
+
+      - name: speed_classification
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['high speed', 'medium speed', 'low speed','null']
