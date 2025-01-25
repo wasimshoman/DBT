@@ -1,1 +1,1 @@
-SELECT * FROM public.manufacturer_sellings
+SELECT * FROM public.manufacturer_top
