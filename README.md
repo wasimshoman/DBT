@@ -8,15 +8,6 @@ A data pipeline that automates **Star Wars starships data** ingestion, transform
 
 ---
 
-## 📋 Table of Contents
-- [Project Overview](#-project-overview)
-- [Features](#-features)
-- [Setup Instructions](#-setup-instructions)
-- [Directory Structure](#-directory-structure)
-- [Visualization](#-visualization)
-- [License](#-license)
-
----
 
 ## 🚀 Project Overview
 
