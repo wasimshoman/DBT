@@ -48,3 +48,28 @@ This project automates the extraction of Star Wars starships data from the **SWA
 ```bash
 git clone https://github.com/wasimshoman/DBT.git
 cd DBT
+
+
+2. Create PostgreSQL Database
+sql
+Copy
+CREATE DATABASE test_db;
+3. Configure Database Credentials
+Update APIcaller.py with your PostgreSQL credentials:
+
+python
+Copy
+DB_HOST = "your_host"      # e.g., "localhost"
+DB_NAME = "test_db"        # Database name
+DB_USER = "your_user"      # e.g., "postgres"
+DB_PASS = "your_password"  # Your PostgreSQL password
+4. Install Dependencies
+bash
+Copy
+pip install -r requirements.txt
+5. Run the Pipeline
+bash
+Copy
+python retail_pg/orchestrator.py
+6. Access Visualizations
+Navigate to the evidence_visualization folder and open the provided files (e.g., Jupyter notebooks or HTML reports).
