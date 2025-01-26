@@ -1,7 +1,7 @@
--- preprocessing data and exporting to csv
+-- models/ml_preprocessing.sql
 {{
   config(
-    materialized='table'
+    materialized='table',
   )
 }}
 
@@ -16,5 +16,4 @@ SELECT
     starship_group as starship_group_manually
 FROM
     {{ ref('OBT_starships') }}
-where cost_in_credits <> 0 
-
+WHERE cost_in_credits <> 0
