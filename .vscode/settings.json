@@ -7,5 +7,6 @@
     },
     "editor.quickSuggestionsDelay": 300,
     "dbt.enableNewLineagePanel": true,
-    "dbt.queryLimit": 5
+    "dbt.queryLimit": 50,
+    "dbt.perspectiveTheme": "Vintage"
 }

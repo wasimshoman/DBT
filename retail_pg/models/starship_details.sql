@@ -4,7 +4,8 @@ select
     ds.starship_class,
     fs.cost_in_credits,
     fs.crew,
-    fs.passengers
+    fs.passengers,
+    fs.length as length
 from fact_starships as fs
 join dim_starships as ds
 on fs.id = ds.id

@@ -7,6 +7,12 @@ models:
         tests:
           - not_null
           - unique
+      - name: helped_in_building
+        tests:
+          - not_null
+      - name: contributed_in_selling
+        tests:
+          - not_null
     description: distint manufacturers and their sellings
   - name: class_details
     columns:
@@ -14,13 +20,31 @@ models:
         tests:
           - not_null
           - unique
+        data_type: character varying
       - name: selling_count
         tests:
           - not_null
+        data_type: bigint
+      - name: avg_selling_price
+        data_type: numeric
+        tests:
+          - not_null
+      - name: avg_atmosphering_speed
+        data_type: numeric
+      - name: avg_crew_size
+        data_type: bigint
+      - name: avg_length
+        data_type: double precision
     description: Analyzes selling count, average selling price, and atmospheric speed by starship class.
   - name: manufacturer_sellings
     columns:
       - name: manufacturer1
+        tests:
+          - not_null
+      - name: selling_count
+        tests:
+          - not_null
+      - name: manufactured_classes
         tests:
           - not_null
     description: Analyzes manufacturers, their selling count, and the diversity of manufactured classes.
@@ -43,6 +67,7 @@ models:
         tests:
           - not_null
           - unique
+        data_type: character varying
       - name: starship_group
         tests:
           - accepted_values:
@@ -70,9 +95,35 @@ models:
       - name: length
         tests:
           - not_null
+      - name: starship_id
+      - name: starship_name
+        data_tests:
+          - not_null
+      - name: starship_class
+        data_tests:
+          - not_null
+      - name: manufacturer1
+        tests:
+          - not_null
+
     description: |-
       buiulding an OBT for all records
        the model fills missing values using simple maths according to each starship model
       sometimes we add data based on domain knowledge of the starships. 
       filling missing data is important for later ML implementation
       i try to group the starships based on arbitratry data. I will check the groups with the results of the ML later.  results is saved as a table.
+  - name: manufacturer_top
+    description: Top 10 selling manufacturers
+    columns:
+      - name: manufacturer
+        tests:
+          - not_null
+      - name: helped_in_building
+        tests:
+          - not_null
+  - name: starship_group_analysis
+    description: Details for each starship group the grouping happened with arbitrarry values refer to starship_model_classification model for more details
+  - name: top_classes
+    description: Identifies the top 5 selling starship classes
+  - name: top_manufacturers_by_revenue
+    description: revenue from each starship the contributed in building for each manufacturer

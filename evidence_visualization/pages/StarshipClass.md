@@ -1,7 +1,7 @@
 ---
 title: Starship model/class details
 ---
-This dashboard provides insights into starship models, including their classification, selling performance, and technical specifications. Use the charts below to explore trends and patterns.
+>This page provides insights into starship models, including their classification, selling performance, and technical specifications. Use the charts below to explore trends and patterns.
 
 
 ```starship_groups_agg
@@ -39,9 +39,9 @@ select count(distinct starship_class) as total_models from postgres.class_detail
 
 
 
-Total sold ships : <Value  data={total_sales} value=total_sales title="Total Units Sold" />.
+Total sold ships : **<Value  data={total_sales} value=total_sales title="Total Units Sold" />**.
 
-Total distinct models :<Value  data={total_models} value=total_models title="Total Starship Models" />.
+Total distinct models : **<Value  data={total_models} value=total_models title="Total Starship Models" />**.
 
 
 <BarChart
@@ -59,7 +59,7 @@ Total distinct models :<Value  data={total_models} value=total_models title="Tot
 
 <DataTable data={classifications}/>
 
-## Grouping of starship models 
+# Grouping of starship models 
 
 <BarChart 
     data={starship_groups_agg}
@@ -71,7 +71,17 @@ Total distinct models :<Value  data={total_models} value=total_models title="Tot
     seriesOrder={['small starships','medium starships','large starships']}
 />
 
-## Details of starship groups
+<BarChart 
+    data={starship_groups_agg}
+    title = 'Starship model group average sellings in credits' 
+    x=starship_group
+    y=avg_cost
+    xAxisTitle="Starship model group"
+    yAxisTitle="Credit"
+    seriesOrder={['small starships','medium starships','large starships']}
+/>
+
+# Details of starship groups
 <BarChart 
     title = 'Average selling price for starship models' 
     data={classifications}
