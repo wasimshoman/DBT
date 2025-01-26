@@ -7,6 +7,7 @@ models:
         tests:
           - not_null
           - unique
+    description: distint manufacturers and their sellings
   - name: class_details
     columns:
       - name: starship_class
@@ -16,11 +17,13 @@ models:
       - name: selling_count
         tests:
           - not_null
+    description: Analyzes selling count, average selling price, and atmospheric speed by starship class.
   - name: manufacturer_sellings
     columns:
       - name: manufacturer1
         tests:
           - not_null
+    description: Analyzes manufacturers, their selling count, and the diversity of manufactured classes.
   - name: starship_details
     columns:
       - name: starship_name
@@ -31,6 +34,9 @@ models:
       - name: starship_class
         tests:
           - not_null
+    description: |-
+      Provides key product details for each starships.
+      the dsecribtion is for each starship name
   - name: starship_model_classification
     columns:
       - name: starship_class
@@ -40,8 +46,33 @@ models:
       - name: starship_group
         tests:
           - accepted_values:
-              values: ['small starships', 'medium starships', 'large starships','null']
+              values:
+                - large starships
+                - medium starships
+                - "null"
+                - small starships
       - name: speed_classification
         tests:
           - accepted_values:
-              values: ['high speed', 'medium speed', 'low speed','null']
+              values:
+                - high speed
+                - low speed
+                - medium speed
+                - "null"
+    description: |-
+      manually classify starship models according to features. the classification is based on the following features:
+      crew, length, cost of unit in credits, atmosheric speed
+  - name: OBT_starships
+    columns:
+      - name: max_atmosphering_speed
+        tests:
+          - not_null
+      - name: length
+        tests:
+          - not_null
+    description: |-
+      buiulding an OBT for all records
+       the model fills missing values using simple maths according to each starship model
+      sometimes we add data based on domain knowledge of the starships. 
+      filling missing data is important for later ML implementation
+      i try to group the starships based on arbitratry data. I will check the groups with the results of the ML later.  results is saved as a table.

@@ -1,3 +1,6 @@
+---Details for each starship group
+--the grouping happened with arbitrarry values
+--refer to starship_model_classification model for more details
 SELECT
     starship_group,
     COUNT(*) AS total_starships,

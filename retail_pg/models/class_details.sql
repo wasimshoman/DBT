@@ -9,7 +9,8 @@ class_ave_cte as (
 select starship_class, 
 count(*) as selling_count, ROUND(avg(case when cost_in_credits is not null then cost_in_credits else 0 end ),0) as avg_selling_price,
 ROUND(avg(case when max_atmosphering_speed is not null then max_atmosphering_speed else 0 end ),0) as avg_atmosphering_speed,
-(sum(case when crew is not null then crew else 0 end) / nullif(count(crew), 0)) as avg_crew_size
+(sum(case when crew is not null then crew else 0 end) / nullif(count(crew), 0)) as avg_crew_size,
+avg(length) as avg_length
 from class_details_cte
 group by starship_class
 )

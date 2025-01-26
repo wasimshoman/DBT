@@ -1,7 +1,13 @@
 ---
-title: Starship class details
+title: Starship model/class details
 ---
+This dashboard provides insights into starship models, including their classification, selling performance, and technical specifications. Use the charts below to explore trends and patterns.
 
+
+```starship_groups_agg
+select * from postgres.starship_group_analysis
+where starship_group <> '-'
+```
 
 ```class_details
 select * from postgres.class_details
@@ -19,22 +25,53 @@ select avg(avg_atmosphering_speed) as avg from postgres.class_details
 select * from postgres.classifications
 
 ```
+```total_sales
+select sum(selling_count) as total_sales from postgres.class_details
+```
+
+``` KPIs
+```
+```total_models
+select count(distinct starship_class) as total_models from postgres.class_details
+```
+
+
+
+
+
+Total sold ships : <Value  data={total_sales} value=total_sales title="Total Units Sold" />.
+
+Total distinct models :<Value  data={total_models} value=total_models title="Total Starship Models" />.
+
 
 <BarChart
-  title = 'Top 10 mosel selling amount for starship models' 
+  title = 'Top 10 model selling amount for starship models' 
   data={class_details}
   x=starship_class
   y=selling_count
   xAxisTitle="Starship class"
-	yAxisTitle="Selling count"
+	yAxisTitle="Number of units sold"
   xLabelWrap=true
 >
   <ReferenceLine data={averageSellingAmount} y= avg label='average selling amount'/>
+  
 </BarChart>
 
 <DataTable data={classifications}/>
 
+## Grouping of starship models 
 
+<BarChart 
+    data={starship_groups_agg}
+    title = 'Starship model group selling count' 
+    x=starship_group
+    y=total_starships
+    xAxisTitle="Starship model group"
+    yAxisTitle="Amount sold"
+    seriesOrder={['small starships','medium starships','large starships']}
+/>
+
+## Details of starship groups
 <BarChart 
     title = 'Average selling price for starship models' 
     data={classifications}
@@ -76,3 +113,4 @@ select * from postgres.classifications
   xLabelWrap=true
   type=grouped
 />
+

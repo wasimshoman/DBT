@@ -1,4 +1,4 @@
---Provides key product details for starships.
+--Provides key product details for each starships.
 select 
     ds.name as starship_name,
     ds.starship_class,

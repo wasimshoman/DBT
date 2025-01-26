@@ -5,5 +5,7 @@
         "comments": false,
         "strings": false
     },
-    "editor.quickSuggestionsDelay": 300
+    "editor.quickSuggestionsDelay": 300,
+    "dbt.enableNewLineagePanel": true,
+    "dbt.queryLimit": 5
 }

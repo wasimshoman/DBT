@@ -1,3 +1,4 @@
+-- revenue from each starship the contributed in building for each manufacturer
 WITH manufacturer_revenue_cte AS (
     SELECT
         manufacturer1 AS manufacturer,
