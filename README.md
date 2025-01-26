@@ -76,8 +76,8 @@ DBT/
 │   ├── orchestrator.py       # Pipeline orchestrator
 │   └── APIcaller.py          # SWAPI data fetcher
 ├   └── models/                   # DBT models (SQL + Jinja)
+│   └── requirements.txt          # Python dependencies
 ├── evidence_visualization/   # Charts/dashboards
-├── requirements.txt          # Python dependencies
 └── README.md
 ```
 
