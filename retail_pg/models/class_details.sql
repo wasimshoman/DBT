@@ -1,10 +1,15 @@
 -- Analyzes selling count, average selling price, and atmospheric speed by starship class.
 with class_details_cte as 
 (
-    select * 
+    select 
+        s.starship_class,
+        f.cost_in_credits,
+        f.max_atmosphering_speed,
+        f.crew,
+        f.length
     from public.dim_starships as s
     inner join public.fact_starships as f
-    on s.id	= f.id
+    ON s.id = f.id
 ),
 
 class_ave_cte as 

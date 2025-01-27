@@ -1,7 +1,9 @@
-#this file runs the project automatically. First the code calls the API caller, which download the data from the source, clean it, save to the database.
-# then the project calls the dbt project to run the models. The models use the fact and dimension tables saved from the previous step to create views. 
-#these views are useful for visualiation 
-# the file then classsify the starship models with ML
+'''
+this file runs the project automatically. First the code calls the API caller, which download the data from the source, clean it, save to the database.
+then the project calls the dbt project to run the models. The models use the fact and dimension tables saved from the previous step to create views. 
+these views are useful for visualiation 
+the file then classsify the starship models with ML
+'''
 import subprocess
 import sys
 import os
