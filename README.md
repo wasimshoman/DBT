@@ -58,6 +58,8 @@ DB_PASS = "your_password"  # Your PostgreSQL password
 ```bash
 pip install -r requirements.txt
 ```
+### 
+```Adjust project.yml file in your .dbt folder with the right infromation```
 
 ### 5. Run the Pipeline 🚀
 ```bash
