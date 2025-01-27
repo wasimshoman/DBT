@@ -1,5 +1,4 @@
 # cluster the starship models into 3 groups based on their attributes. 
-# scripts/train_clusters.py
 import pandas as pd
 from sklearn.cluster import KMeans
 from sklearn.preprocessing import StandardScaler
@@ -32,8 +31,10 @@ try:
     print(f"Success! Saved {len(df)} clusters to database")
 
     # Show quick summary
+    '''
     print("\nCluster distribution:")
     print(df['cluster'].value_counts())
+    '''
 
 except Exception as e:
     print(f"Error: {e}")
