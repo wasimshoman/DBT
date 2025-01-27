@@ -1,4 +1,4 @@
--- models/ml_preprocessing.sql
+--prepare a table to the ML script
 {{
   config(
     materialized='table',
