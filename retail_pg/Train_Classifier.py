@@ -1,4 +1,5 @@
 # cluster the starship models into 3 groups based on their attributes. 
+# results are saved to anew table (starship_clusters)
 import pandas as pd
 from sklearn.cluster import KMeans
 from sklearn.preprocessing import StandardScaler
@@ -10,7 +11,21 @@ engine = create_engine('postgresql://admin:admin@localhost:5432/test_db')
 try:
     # Load data from the ml_preprocessing table
     with engine.connect() as conn:
-        df = pd.read_sql("SELECT * FROM public.ml_preprocessing", conn)
+        df = pd.read_sql("""
+            SELECT
+                starship_id,
+                starship_name,
+                cost_in_credits,
+                crew,
+                passengers,
+                max_atmosphering_speed,
+                length,
+                starship_group as starship_group_manually
+            FROM
+                public."OBT_starships"
+            WHERE cost_in_credits <> 0
+            """
+                         , conn)
 
     # Get relevant features
     features = ['cost_in_credits', 'crew', 'passengers', 'max_atmosphering_speed', 'length']
