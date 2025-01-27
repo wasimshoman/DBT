@@ -1,7 +1,7 @@
 -- buiulding an OBT for all records
 -- the model fills missing values using simple maths according to each starship model
 -- sometimes we add data based on domain knowledge of the starships. 
--- filling missing data is important for later ML implementation
+-- filling missing data is important for later ML implementation (not implemented yet)
 -- i try to group the starships based on arbitratry data. I will check the groups with the results of the ML later. 
 -- results is saved as a table. 
 
@@ -9,10 +9,12 @@
     materialized="table",
 ) }}
 
-with joined_starship_cte as(
-select * from public.dim_starships ds
-inner join public.fact_starships fs
-on ds.id = fs.id
+with joined_starship_cte as
+(
+    select * 
+    from public.dim_starships as ds
+    inner join public.fact_starships as fs
+    on ds.id = fs.id
 ),
 
 class_stats AS (
@@ -35,26 +37,21 @@ starship_details_cte AS (
         ds.manufacturer_id,
         dm.manufacturer1,
         dm.manufacturer2,
-        
         -- replace missing cost with class median
         COALESCE(
             fs.cost_in_credits, 
             cs.class_median_cost
         ) AS cost_in_credits,
-        
         -- replace missing crew with 0 
         COALESCE(fs.crew, 0) AS crew,
-        
         -- replace missing passengers with 0
         COALESCE(fs.passengers, 0) AS passengers,
-        
         -- replace speed with starship class average. in case no average for class then get global avg
         COALESCE(
             fs.max_atmosphering_speed, 
             cs.class_avg_speed, 
             (SELECT AVG(max_atmosphering_speed) FROM public.fact_starships)
         ) AS max_atmosphering_speed,
-        
         -- replace length with class average
         COALESCE(
             fs.length, 

@@ -1,4 +1,4 @@
----Details for each starship group
+---General aggregation metrics for each starship group
 --the grouping happened with arbitrarry values
 --refer to starship_model_classification model for more details
 SELECT
@@ -6,7 +6,7 @@ SELECT
     COUNT(*) AS total_starships,
     AVG(cost_in_credits) AS avg_cost,
     AVG(max_atmosphering_speed) AS avg_speed
-from
+from 
     {{ ref('OBT_starships') }}
 group by  starship_group
 order by  total_starships DESC

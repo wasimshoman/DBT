@@ -20,7 +20,7 @@ DB_NAME = "test_db"
 DB_USER = "admin"
 DB_PASS = "admin"
 
-# Function to fetch starship data from the API
+# fetch starship data from the API
 def fetch_starship_data():
     url = "https://swapi.dev/api/starships/"
     starships = []
@@ -38,6 +38,7 @@ def to_sentence_case(text):
 def to_title_case(text):
     return text.title() if text else None
 
+# data cleaning and structuring
 # split manufacturer into two columns if multiple manufacturers exist
 #search for company suffex and add it to the first name
 def split_manufacturers(manufacturer):
@@ -48,6 +49,7 @@ def split_manufacturers(manufacturer):
     return manufacturers[0], manufacturers[1] if len(manufacturers) > 1 else None
 
 # process starship data
+#format data to the right structure
 def process_starship_data(starships):
     processed_starships = []
     for ship in starships:
@@ -121,7 +123,7 @@ def save_starship_data_to_db(starships):
             
     """)
 
-    # insert data into dimension and fact tables
+    # insert data into dimension and fact tables + metadata
     manufacturer_cache = {}
     for ship in starships:
         # insert into dim_manufacturers if not already inserted
@@ -156,6 +158,7 @@ def save_starship_data_to_db(starships):
             ship["hyperdrive_rating"], ship["MGLT"]
         ))
     # Insert metadata into the table
+    # data copied from the website
     metadata = [
         ("name", "string", "The name of this starship. The common name, such as 'Death Star'."),
         ("model", "string", "The model or official name of this starship. Such as 'T-65 X-wing' or 'DS-1 Orbital Battle Station'."),
