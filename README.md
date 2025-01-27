@@ -4,12 +4,12 @@
 ![Python](https://img.shields.io/badge/python-3.13-blue?style=for-the-badge&logo=python)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql)
 
-A data pipeline that automates **Star Wars starships data** ingestion, transformation, and visualization using Python, SWAPI, PostgreSQL, and DBT.
+A data pipeline that automates **Star Wars starships data** ingestion, transformation, and visualization using Python, SWAPI, SQL, PostgreSQL, and DBT.
 
 
 ## 🚀 Project Overview
 
-This project automates the extraction of Star Wars starships data from the **SWAPI API**, stores it in a PostgreSQL database, and transforms it into analytical models using **DBT**. The final output includes visualized insights for stakeholders.
+This project automates the extraction of Star Wars starships data from the **SWAPI API**, stores it in a PostgreSQL database, and transforms it into analytical models using **DBT** and its SQL models. The final output includes visualized insights for stakeholders.
 
 ### Key Components:
 - **Orchestrator Script**: Combines data ingestion (`APIcaller.py`) and DBT transformation.
