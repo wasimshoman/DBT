@@ -12,31 +12,21 @@ A data pipeline that automates **Star Wars starships data** ingestion, transform
 This project automates the extraction of Star Wars starships data from the **SWAPI API**, stores it in a PostgreSQL database, and transforms it into analytical models using **DBT** and its SQL models. The final output includes visualized insights for stakeholders.
 
 ### Key Components:
-- **Orchestrator Script**: Combines data ingestion (`APIcaller.py`) and DBT transformation.
+- **Orchestrator Script**: Combines data ingestion (`APIcaller.py`), DBT transformation and Classifier.
 - **DBT Models**: SQL models for creating tables/views.
 - **Visualization**: Interactive dashboards or charts in the `evidence_visualization` folder.
-
----
-
-## 🛠️ Features
-- **Automated Data Ingestion**: Fetches data from SWAPI and loads it into PostgreSQL.
-- **DBT Transformations**: Modular SQL models for business-ready analytics.
-- **Visual Insights**: Pre-built visualizations for quick analysis.
-
----
 
 ## 🛠️ Setup Instructions
 
 ### Prerequisites
 - Python 3.13
 - PostgreSQL 
-- [DBT CLI](https://docs.getdbt.com/dbt-cli/installation)
+- DBT core
 - Git
 
 ### 1. Clone the Repository
 ```bash
 git clone https://github.com/wasimshoman/DBT.git
-cd DBT
 ```
 
 ### 2. Create PostgreSQL Database 🗄️
@@ -55,21 +45,22 @@ DB_PASS = "your_password"  # Your PostgreSQL password
 ```
 
 ### 4. Install Dependencies 📦
+Navigate to the DBT/retail_pg.
+
 ```bash
 pip install -r requirements.txt
 ```
 ### 
-```Adjust project.yml file in your .dbt folder with the right information
-For better debugging and control of the DBT project install the appropriate extensions from VScode
-```
+
+Adjust project.yml file in your .dbt folder with the right information.
+
+For better debugging, control of the DBT project, and visualization install the appropriate extensions from the VScode extension menu.
+
 
 ### 5. Run the Pipeline 🚀
 ```bash
 python retail_pg/orchestrator.py
 ```
-
-### 6. Access Visualizations 📊
-Navigate to the `evidence_visualization` folder and open the provided files (e.g., Jupyter notebooks or HTML reports).
 
 ---
 
@@ -78,6 +69,7 @@ Navigate to the `evidence_visualization` folder and open the provided files (e.g
 DBT/
 ├── retail_pg/
 │   ├── orchestrator.py       # Pipeline orchestrator
+│   ├── Train_Classifier.py       # group starship models according to k means
 │   └── APIcaller.py          # SWAPI data fetcher
 ├   └── models/                   # DBT models (SQL + Jinja)
     ├── requirements.txt          # Python dependencies
@@ -90,7 +82,7 @@ DBT/
 ## 📊 Visualization
 After running the pipeline:
 1. Open the `evidence_visualization` folder in VS Code.
-3. Click **Start Evidence** to explore results.
+2. Click **Start Evidence** to explore results.
 
 
 ---
