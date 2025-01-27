@@ -4,7 +4,7 @@
 ![Python](https://img.shields.io/badge/python-3.13-blue?style=for-the-badge&logo=python)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql)
 
-A data pipeline that automates **Star Wars starships data** ingestion, transformation, and visualization using Python, SWAPI, PostgreSQL, and DBT.
+A data pipeline that automates **Star Wars starships data** ingestion, transformation, and visualization using Python, SWAPI, SQL, PostgreSQL, and DBT.
 
 
 ## 🚀 Project Overview
