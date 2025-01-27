@@ -9,7 +9,7 @@ A data pipeline that automates **Star Wars starships data** ingestion, transform
 
 ## 🚀 Project Overview
 
-This project automates the extraction of Star Wars starships data from the **SWAPI API**, stores it in a PostgreSQL database, and transforms it into analytical models using **DBT**. The final output includes visualized insights for stakeholders.
+This project automates the extraction of Star Wars starships data from the **SWAPI API**, stores it in a PostgreSQL database, and transforms it into analytical models using **DBT** and its SQL models. The final output includes visualized insights for stakeholders.
 
 ### Key Components:
 - **Orchestrator Script**: Combines data ingestion (`APIcaller.py`) and DBT transformation.
