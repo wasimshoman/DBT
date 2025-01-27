@@ -59,7 +59,9 @@ DB_PASS = "your_password"  # Your PostgreSQL password
 pip install -r requirements.txt
 ```
 ### 
-```Adjust project.yml file in your .dbt folder with the right infromation```
+```Adjust project.yml file in your .dbt folder with the right information
+For better debugging and control of the DBT project install the appropriate extensions from VScode
+```
 
 ### 5. Run the Pipeline 🚀
 ```bash
