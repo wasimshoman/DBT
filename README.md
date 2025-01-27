@@ -21,7 +21,7 @@ This project automates the extraction of Star Wars starships data from the **SWA
 ### Prerequisites
 - Python 3.13
 - PostgreSQL 
-- [DBT core]
+- DBT core
 - Git
 
 ### 1. Clone the Repository
