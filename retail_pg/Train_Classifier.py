@@ -43,8 +43,8 @@ try:
     X = df[features].fillna(0) # important for the classsifier to work
 
     # Create and train model
-    scaler = StandardScaler()
-    kmeans = KMeans(n_clusters=3, random_state=42)
+    scaler = StandardScaler() #ensures all features are on a similar scale.
+    kmeans = KMeans(n_clusters=3, random_state=42) # data will be grouped into 3 clusters (o,1,2). 
     df['cluster'] = kmeans.fit_predict(scaler.fit_transform(X))
 
     # Save results to database
