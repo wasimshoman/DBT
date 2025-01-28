@@ -8,4 +8,6 @@ This is the home page for the starship data documentation. Below are links to th
 - [Starship Class Analysis](StarshipClass.md)  
   Analyze starship classes, their selling counts, and average metrics. You also see model groups
 
+- [Next Steps](NextStep.md)  
+  Use the details to sell starship models
 ---
