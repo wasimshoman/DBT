@@ -69,12 +69,9 @@ try:
         cluster = int(row['cluster'])
         cursor.execute(insert_query, (starship_id, cluster))
 
-    # Commit the transaction
     conn.commit()
     print(f"Success! Saved {len(df)} clusters to database")
 
-    # Show quick summary
-    print(df['cluster'].value_counts())
 
 except Exception as e:
     print(f"Error: {e}")
