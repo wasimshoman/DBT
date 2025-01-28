@@ -1,7 +1,8 @@
 '''
 this file runs the project automatically. First the code calls the API caller, which download the data from the source, clean it, save to the database.
 then the project calls the dbt project to run the models. The models use the fact and dimension tables saved from the previous step to create views, which are useful for visualization.  
-There is also an OBT, which I used to populate the missing data using some mathematical operations. I also use this table to classify the starship models into three clusters which can be small, medium, and large ships using an ML algorithm. 
+There is also an OBT, which I used to populate the missing data using some mathematical operations. I also use this table to classify the starship models into three clusters which can be small, 
+medium, and large ships using an ML algorithm. 
 
 '''
 import subprocess
