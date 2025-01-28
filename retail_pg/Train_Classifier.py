@@ -1,5 +1,8 @@
+#created: 2025 26 01
+
 # cluster the starship models into 3 groups based on their attributes. 
 # results are saved to anew table (starship_clusters)
+
 import pandas as pd
 from sklearn.cluster import KMeans
 from sklearn.preprocessing import StandardScaler
@@ -23,7 +26,7 @@ try:
     conn = psycopg2.connect(**conn_params)
     cursor = conn.cursor()
 
-    # Load data from the OBT_starships table
+    # Load valid data from the OBT_starships table
     query = """
         SELECT
             starship_id,
