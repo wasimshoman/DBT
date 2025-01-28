@@ -36,7 +36,7 @@ CREATE DATABASE test_db;
 ```
 
 ### 3. Configure Database Credentials 🔐
-Update `APIcaller.py` with your PostgreSQL credentials:
+Update `APIcaller.py` and `Train_Classifier.py` with your PostgreSQL credentials:
 ```python
 DB_HOST = "your_host"      # e.g., "localhost"
 DB_NAME = "test_db"        # Database name
@@ -52,7 +52,7 @@ pip install -r requirements.txt
 ```
 ### 
 
-Adjust project.yml file in your .dbt folder with the right information.
+Adjust project.yml file in your .dbt folder with the right information/details.
 
 For better debugging, control of the DBT project, and visualization install the appropriate extensions from the VScode extension menu.
 
