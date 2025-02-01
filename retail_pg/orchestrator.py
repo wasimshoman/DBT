@@ -1,23 +1,23 @@
-"""
-created: 2025 26 01
-this file runs the project automatically. First the code calls the API caller, which download the data from the source, clean it, save to the database.
-then the project calls the dbt project to run the models. The models use the fact and dimension tables saved from the previous step to create views. 
-these views are useful for visualiation 
-the file then classsify the starship models with ML
-"""
+'''
+this file runs the project automatically. This is an executor for the project parts in the intended order. First the code calls the API caller, which download the data from the source, clean it, save to the database.
+then the project calls the dbt project to run the models. The models use the fact and dimension tables saved from the previous step to create views, which are useful for visualization.  
+There is also an OBT, which I used to populate the missing data using some mathematical operations. I also use this table to classify the starship models into three clusters which can be small, 
+medium, and large ships using an ML algorithm. 
+
+'''
 import subprocess
 import sys
 import os
 
 class DataPipeline:
-    #Manage the data pipeline.
+    #Manage the data pipeline
 
     def __init__(self):
         # Set the script directory
         self.script_dir = os.path.dirname(os.path.abspath(__file__))
 
     def run_python_script(self, script_name):
-        #Run a Python script.
+        #Python script
         print(f"Running {script_name}...")
         try:
             print(f"Running {script_name} in: {self.script_dir}")
@@ -31,12 +31,12 @@ class DataPipeline:
             sys.exit(1)
 
     def run_dbt_models(self):
-        #Run dbt models.
+        #Run dbt models
         print("Running dbt models...")
         try:
             print(f"Running dbt in: {self.script_dir}")
             subprocess.run(["dbt", "run"], check=True, cwd=self.script_dir)
-            print("dbt models executed successfully.")
+            print("dbt models executed successfully")
         except subprocess.CalledProcessError as e:
             print(f"Error running dbt models: {e}")
             sys.exit(1)
@@ -48,15 +48,15 @@ class DataPipeline:
             sys.exit(1)
 
     def run_pipeline(self):
-        #Run the entire pipeline.
+        #Run the entire pipeline
         try:
-            #Download and store data
+            #download and store data
             self.run_python_script("APIcaller.py")
 
             #Run dbt models
             self.run_dbt_models()
 
-             #Train the classifier
+            #Train the classifier (K means)
             self.run_python_script("Train_Classifier.py")
 
         except Exception as e:

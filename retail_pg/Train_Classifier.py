@@ -10,9 +10,7 @@ import psycopg2
 from psycopg2 import sql
 import numpy as np
 
-
-
-# Configure database connection
+# database connection
 conn_params = {
     'dbname': 'test_db',
     'user': 'admin',
@@ -26,7 +24,7 @@ try:
     conn = psycopg2.connect(**conn_params)
     cursor = conn.cursor()
 
-    # Load valid data from the OBT_starships table
+    # load right data from the OBT_starships table
     query = """
         SELECT
             starship_id,
@@ -45,27 +43,26 @@ try:
 
     # Get relevant features
     features = ['cost_in_credits', 'crew', 'passengers', 'max_atmosphering_speed', 'length']
-    X = df[features].fillna(0)
+    X = df[features].fillna(0) # important for the classsifier to work
 
     # Create and train model
-    scaler = StandardScaler()
-    kmeans = KMeans(n_clusters=3, random_state=42)
+    scaler = StandardScaler() #ensures all features are on a similar scale.
+    kmeans = KMeans(n_clusters=3, random_state=42) # data will be grouped into 3 clusters (o,1,2). 
     df['cluster'] = kmeans.fit_predict(scaler.fit_transform(X))
 
-    
-    # save results to database
-    
-    # Drop if it exists and create a new table
+    # Save results to database
+    # Drop the existing table if it exists
+    # Create a new table
     create_table_query = """
     DROP TABLE IF EXISTS starship_clusters;
-    CREATE TABLE starship_clusters (
-        starship_id INT PRIMARY KEY,
-        cluster INT
-    );
+        CREATE TABLE starship_clusters (
+            starship_id INT PRIMARY KEY,
+            cluster INT
+        );
     """
     cursor.execute(create_table_query)
 
-     # Insert data into the new table
+    # Insert data into the new table
     insert_query = sql.SQL("""
         INSERT INTO starship_clusters (starship_id, cluster)
         VALUES (%s, %s);
@@ -78,15 +75,14 @@ try:
     conn.commit()
     print(f"Success! Saved {len(df)} clusters to database")
 
+
 except Exception as e:
     print(f"Error: {e}")
     if 'conn' in locals():
-        conn.rollback()  
+        conn.rollback()
 finally:
+    # Close the database connection
     if 'cursor' in locals():
         cursor.close()
     if 'conn' in locals():
         conn.close()
-
-
-
