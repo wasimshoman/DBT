@@ -44,7 +44,7 @@ jobs:
       - name: Create Database and User
         run: |
           psql -U postgres -d postgres -c "CREATE DATABASE test_db;" || true
-          psql -U postgres -d postgres -c "CREATE USER app_user WITH PASSWORD '${{ secrets.DB_PASS }}';" || true
+          psql -U postgres -d postgres -c "CREATE USER app_user WITH PASSWORD 'admin';" || true
           psql -U postgres -d postgres -c "GRANT ALL PRIVILEGES ON DATABASE test_db TO app_user;"
           psql -U postgres -d postgres -c "ALTER DATABASE test_db OWNER TO app_user;"
 
@@ -57,13 +57,19 @@ jobs:
           DB_HOST: localhost
           DB_NAME: test_db
           DB_USER: app_user
-          DB_PASS: ${{ secrets.DB_PASS }}  # Use DB_PASS
+          DB_PASS: admin
           
 
       - name: Run DBT Models
         run: |
           cd ${{ github.workspace }}/retail_pg
-          dbt run  # No need to call python here
+          .venv\Scripts\activate  # Activate the virtual environment (Windows)
+          dbt run
+        env:
+          DB_HOST: localhost
+          DB_NAME: test_db
+          DB_USER: app_user
+          DB_PASS: admin
 
       - name: Run Train Classifier
         run: |
@@ -72,8 +78,8 @@ jobs:
         env:
           DB_HOST: localhost
           DB_NAME: test_db
-          DB_USER: ${{ secrets.DB_USER }}
-          DB_PASS: ${{ secrets.DB_PASS }}
+          DB_USER: app_user
+          DB_PASS: admin
 
       - name: Lint with flake8
         run: |
