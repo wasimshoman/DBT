@@ -90,7 +90,8 @@ jobs:
       - name: Run Train Classifier
         run: |
           cd ${{ github.workspace }}/retail_pg
-          .venv\Scripts\Activate.ps1  # Activate (REUSE)
+          .venv\Scripts\Activate.ps1  # Activate the virtual environment
+          pip install pandas scikit-learn # Install pandas and other dependencies
           python Train_Classifier.py
         env:
           DB_HOST: localhost
