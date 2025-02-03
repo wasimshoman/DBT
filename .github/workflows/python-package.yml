@@ -1,28 +1,27 @@
+---
 name: Python package
-
 on:
   push:
-    branches: [ "main" ]
+    branches:
+      - main
   pull_request:
-    branches: [ "main" ]
-
+    branches:
+      - main
 jobs:
   build:
     runs-on: windows-latest
     strategy:
       matrix:
-        python-version: ['3.12']
-
+        python-version:
+          - "3.12"
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v3
         with:
           python-version: ${{ matrix.python-version }}
-
       - name: Cache dependencies
         uses: actions/cache@v3
         with:
@@ -30,42 +29,36 @@ jobs:
           key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
           restore-keys: |
             ${{ runner.os }}-pip-
-
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           python -m pip install requests psycopg2
           if (Test-Path requirements.txt) { pip install -r requirements.txt }
-
       - name: Set up PostgreSQL
         uses: ankane/setup-postgres@v1
         with:
-          postgres-version: '14'
-
-
-          
-
+          postgres-version: "14"
       - name: Set up PostgreSQL
         uses: ankane/setup-postgres@v1
         with:
-          postgres-version: '14'
-
+          postgres-version: "14"
       - name: Create Database and User
         shell: pwsh
-        run: |
+        run: >
           psql -U postgres -d postgres -w -c "CREATE DATABASE test_db;" 2>NUL || true
 
+
           $userExists = (psql -U postgres -d postgres -w -t -c "SELECT 1 FROM pg_roles WHERE rolname = 'admin';" 2>&1 | Select-String -Quiet)
+
 
           if (-not $userExists) {
             psql -U postgres -d postgres -w -c "CREATE ROLE admin WITH LOGIN PASSWORD 'admin';"
           }
 
+
           psql -U postgres -d postgres -w -c "GRANT ALL PRIVILEGES ON DATABASE test_db TO admin;"
+
           psql -U postgres -d postgres -w -c "ALTER DATABASE test_db OWNER TO admin;"
-
-
-
       - name: Run API Caller
         run: |
           cd ${{ github.workspace }}/retail_pg
@@ -73,20 +66,26 @@ jobs:
         env:
           DB_HOST: localhost
           DB_NAME: test_db
-          DB_USER: admin # use admin
-          DB_PASS: 'admin' # use 'admin'
-
+          DB_USER: admin
+          DB_PASS: admin
       - name: Run DBT Models and Tests
-        run: |
+        run: >
           cd ${{ github.workspace }}/retail_pg
+
           .venv\Scripts\Activate.ps1  # Activate (REUSE)
+
           pip install dbt-core dbt-postgres # Install dbt and adapter
-          
+
+
           # Create dbt profiles directory (same as before)
+
           mkdir -p $env:USERPROFILE\.dbt
 
+
           # Create dbt profiles.yml file (same as before - make sure connection details are correct)
+
           echo "
+
           retail_pg: # Or whatever your profile name is
             target: dev
             outputs:
@@ -100,25 +99,28 @@ jobs:
                 port: 5432
           " | Out-File -Encoding utf8 $env:USERPROFILE\.dbt\profiles.yml
 
+
           dbt run
+
           dbt test # Run dbt tests
-          
       - name: Run Train Classifier
         run: |
           cd ${{ github.workspace }}/retail_pg
           .venv\Scripts\Activate.ps1  # Activate (REUSE)
           python Train_Classifier.py
-          
         env:
           DB_HOST: localhost
           DB_NAME: test_db
           DB_USER: admin
-          DB_PASS: 'admin'
-
-    - name: Lint with flake8
-        run: |
+          DB_PASS: admin
+      - name: Lint with flake8
+        run: >
           cd ${{ github.workspace }}/retail_pg
+
           .venv\Scripts\Activate.ps1 # Activate it
+
           pip install flake8 # Install flake8
+
           flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+
           flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
