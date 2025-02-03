@@ -31,14 +31,14 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pip-
 
-      - name: Create and Activate Virtual Environment & Install Dependencies
-        run: |
-          cd ${{ github.workspace }}/retail_pg  # Go to project directory
-          python -m venv .venv  # Create virtual environment
-          .venv\Scripts\Activate.ps1  # Activate it
-          pip install --upgrade pip
-          pip install requests psycopg2 flake8 pytest dbt-core dbt-postgres pandas scikit-learn 
-          if (Test-Path requirements.txt) { pip install -r requirements.txt } 
+      - name: Create and Activate Virtual Environment & Install Dependencies (ONCE)
+        run: |
+          cd ${{ github.workspace }}/retail_pg
+          python -m venv .venv
+          .venv\Scripts\Activate.ps1
+          pip install --upgrade pip
+          pip install requests psycopg2 flake8 pytest dbt-core dbt-postgres pandas scikit-learn
+          if (Test-Path requirements.txt) { pip install -r requirements.txt }
 
 
       - name: Set up PostgreSQL
@@ -65,9 +65,10 @@ jobs:
 
 
       - name: Run API Caller
-        run: |
-          cd ${{ github.workspace }}/retail_pg
-          python APIcaller.py
+        run: |
+          cd ${{ github.workspace }}/retail_pg
+          .venv\Scripts\Activate.ps1  # Activate the virtual environment (REUSE) <--- Added
+          python APIcaller.py
         env:
           DB_HOST: localhost
           DB_NAME: test_db
@@ -77,8 +78,7 @@ jobs:
       - name: Run DBT Models
         run: |
           cd ${{ github.workspace }}/retail_pg
-          python -m venv .venv
-          .venv\Scripts\Activate.ps1
+          .venv\Scripts\Activate.ps1  
 
           # Create dbt profiles directory
           mkdir -p $env:USERPROFILE\.dbt # or mkdir -p $env:HOME\.dbt for consistency
@@ -109,8 +109,8 @@ jobs:
       - name: Run Train Classifier
         run: |
           cd ${{ github.workspace }}/retail_pg
-          .venv\Scripts\Activate.ps1 
-          python Train_Classifier.py
+          .venv\Scripts\Activate.ps1  
+          python Train_Classifier.py
           
         env:
           DB_HOST: localhost
