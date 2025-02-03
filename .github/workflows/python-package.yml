@@ -37,11 +37,14 @@ jobs:
           username: ${{ secrets.DB_USER }}
           password: ${{ secrets.DB_PASS }}  # Use secret, correct parameter name
           
-      - name: Create Database
+
+      - name: Create Database and User
         run: |
-          psql -U postgres -d postgres -w -c "CREATE DATABASE test_db;" # Create the database
-          # Or, if you have a specific user that should own the DB:
-          # psql -U postgres -d postgres -w -c "CREATE DATABASE test_db OWNER admin;"
+          psql -U postgres -d postgres -w -c "CREATE DATABASE IF NOT EXISTS test_db;"
+          psql -U postgres -d postgres -w -c "CREATE USER IF NOT EXISTS admin WITH PASSWORD '${{ secrets.DB_PASS }}';"
+          psql -U postgres -d postgres -w -c "GRANT ALL PRIVILEGES ON DATABASE test_db TO app_user;"
+          psql -U postgres -d postgres -w -c "ALTER DATABASE test_db OWNER TO admin;" # Make app_user the owner
+
 
 
       - name: Run API Caller
