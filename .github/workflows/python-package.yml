@@ -57,7 +57,7 @@ jobs:
 
       - name: Run Train Classifier
         run: |
-          cd ${{ github.workspace }}/DBT/retail_pg  # Absolute path using github.workspace
+          cd ${{ github.workspace }}/retail_pg  # Absolute path using github.workspace
           python Train_Classifier.py
         env: # Set environment variables for DB connection
           DB_HOST: localhost
