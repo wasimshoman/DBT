@@ -32,7 +32,9 @@ jobs:
           db-user: 'admin'
           db-pass: 'admin'
       - name: Run API Caller
-        run: python APIcaller.py
+        run: |
+          cd DBT/retail_pg  # Change to the correct directory
+          python APIcaller.py
         env: # Set environment variables for DB connection
           DB_HOST: localhost
           DB_NAME: test_db
