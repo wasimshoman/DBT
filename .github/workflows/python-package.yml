@@ -61,40 +61,32 @@ jobs:
           DB_USER: admin
           DB_PASS: admin
       - name: Run DBT Models and Tests
-        run: >
+        run: |
           cd ${{ github.workspace }}/retail_pg
-
-          .venv\Scripts\Activate.ps1  # Activate (REUSE)
-
+          python -m venv .venv
+          .venv\Scripts\Activate.ps1
           pip install dbt-core dbt-postgres # Install dbt and adapter
-
-
-          # Create dbt profiles directory (same as before)
-
           mkdir -p $env:USERPROFILE\.dbt
-
-
-          # Create dbt profiles.yml file (same as before - make sure connection details are correct)
-
           echo "
-
-          retail_pg: # Or whatever your profile name is
+          retail_pg:
             target: dev
             outputs:
               dev:
                 type: postgres
                 host: localhost
                 database: test_db
-                schema: public # Or your schema
+                schema: public
                 user: admin
                 password: 'admin'
                 port: 5432
           " | Out-File -Encoding utf8 $env:USERPROFILE\.dbt\profiles.yml
-
-
           dbt run
-
-          dbt test # Run dbt tests
+          dbt test
+        env:
+          DB_HOST: localhost
+          DB_NAME: test_db
+          DB_USER: admin
+          DB_PASS: 'admin'
       - name: Run Train Classifier
         run: |
           cd ${{ github.workspace }}/retail_pg
