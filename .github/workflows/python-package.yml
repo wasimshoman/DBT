@@ -82,7 +82,7 @@ jobs:
 
           # Create dbt profiles.yml file (replace with your actual connection details)
           echo "
-          your_profile_name:  # Replace with your profile name
+          retail_pg:  # Replace with your profile name
             target: dev
             outputs:
               dev:
