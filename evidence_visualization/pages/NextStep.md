@@ -19,14 +19,3 @@ To simplify the decision-making process for customers, we can categorize the sta
 
 By presenting these groups, we can make it easier for customers to choose the starship model that best fits their needs and budget.
 
-
----
-title: Starship Class Finder
-description: Filter starship classes based on attributes like cost, speed, crew, length, and group.
----
-
-# Interactive Starship Class Finder 🚀
-
-This tool allows you to filter starship classes based on their attributes. Use the sliders and dropdowns to find the starship class that meets your requirements.
-
----
