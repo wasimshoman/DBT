@@ -14,113 +14,88 @@ jobs:
         python-version: ['3.12']
 
     steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
+      # ... (checkout, setup Python, caching, install dependencies - same as before)
 
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v3
+      - name: Set up PostgreSQL
+        uses: ankane/setup-postgres@v1
         with:
-          python-version: ${{ matrix.python-version }}
+          postgres-version: '14'
 
-      - name: Cache dependencies
-        uses: actions/cache@v3
-        with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-pip-
+      - name: Create Database and User
+        shell: pwsh
+        run: |
+          psql -U postgres -d postgres -w -c "CREATE DATABASE test_db;" 2>NUL || true
 
-      - name: Create and Activate Virtual Environment & Install Dependencies (ONCE)
+          # Check if the user exists (PowerShell version - improved)
+          $userExists = (psql -U postgres -d postgres -w -t -c "SELECT 1 FROM pg_roles WHERE rolname = 'admin';" | Convert-String) -ne ""
+
+          if (-not $userExists) {
+            psql -U postgres -d postgres -w -c "CREATE ROLE admin WITH LOGIN PASSWORD 'admin';" # Create with LOGIN
+          }
+
+          psql -U postgres -d postgres -w -c "GRANT ALL PRIVILEGES ON DATABASE test_db TO admin;"
+          psql -U postgres -d postgres -w -c "ALTER DATABASE test_db OWNER TO admin;"
+
+
+      - name: Run API Caller
+        run: |
+          cd ${{ github.workspace }}/retail_pg
+          python APIcaller.py
+        env:
+          DB_HOST: localhost
+          DB_NAME: test_db
+          DB_USER: admin # use admin
+          DB_PASS: 'admin' # use 'admin'
+
+      - name: Run DBT Models and Tests
         run: |
           cd ${{ github.workspace }}/retail_pg
           python -m venv .venv
           .venv\Scripts\Activate.ps1
-          pip install --upgrade pip
-          pip install requests psycopg2 flake8 pytest dbt-core dbt-postgres pandas scikit-learn
-          if (Test-Path requirements.txt) { pip install -r requirements.txt }
+          pip install dbt-core dbt-postgres # Install dbt and adapter
+          
+          # Create dbt profiles directory (same as before)
+          mkdir -p $env:USERPROFILE\.dbt
 
+          # Create dbt profiles.yml file (same as before - make sure connection details are correct)
+          echo "
+          retail_pg: # Or whatever your profile name is
+            target: dev
+            outputs:
+              dev:
+                type: postgres
+                host: localhost
+                database: test_db
+                schema: public # Or your schema
+                user: admin
+                password: 'admin'
+                port: 5432
+          " | Out-File -Encoding utf8 $env:USERPROFILE\.dbt\profiles.yml
 
-      - name: Set up PostgreSQL
-        uses: ankane/setup-postgres@v1
-        with:
-          postgres-version: '14'
-      - name: Create Database and User
-        shell: pwsh
-        run: |
-          # Create the database (ignore errors if it already exists)
-          psql -U postgres -d postgres -w -c "CREATE DATABASE test_db;" 2>NUL || true
+          dbt run
+          dbt test # Run dbt tests
+        env:
+          DB_HOST: localhost
+          DB_NAME: test_db
+          DB_USER: admin
+          DB_PASS: 'admin'
 
-          # Check if the user exists
-          $userExists = psql -U postgres -d postgres -w -t -c "SELECT 1 FROM pg_roles WHERE rolname = 'admin';"
-          if (-not $userExists) {
-            # Create the user if it doesn't exist
-            psql -U postgres -d postgres -w -c "CREATE USER admin WITH PASSWORD 'admin';"
-          }
-
-          # Grant privileges and alter ownership
-          psql -U postgres -d postgres -w -c "GRANT ALL PRIVILEGES ON DATABASE test_db TO admin;"
-          psql -U postgres -d postgres -w -c "ALTER DATABASE test_db OWNER TO admin;"
-
-
-
-      - name: Run API Caller
+      - name: Run Train Classifier
         run: |
           cd ${{ github.workspace }}/retail_pg
-          .venv\Scripts\Activate.ps1  # Activate the virtual environment (REUSE) <--- Added
-          python APIcaller.py
-        env:
-          DB_HOST: localhost
-          DB_NAME: test_db
-          DB_USER: admin
-          DB_PASS: 'admin'
-          
-      - name: Run DBT Models
-        run: |
-          cd ${{ github.workspace }}/retail_pg
-          .venv\Scripts\Activate.ps1  
-
-          # Create dbt profiles directory
-          mkdir -p $env:USERPROFILE\.dbt # or mkdir -p $env:HOME\.dbt for consistency
-
-          # Create dbt profiles.yml file 
-          echo "
-          retail_pg:
-            target: dev
-            outputs:
-              dev:
-                type: postgres
-                host: localhost
-                database: test_db
-                schema: public  # Or your schema
-                user: admin
-                password: 'admin'
-                port: 5432
-          " | Out-File -Encoding utf8 $env:USERPROFILE\.dbt\profiles.yml  # or $env:HOME\.dbt\profiles.yml
-
-          dbt run
-          dbt test
-        env:
-          DB_HOST: localhost
-          DB_NAME: test_db
-          DB_USER: admin
-          DB_PASS: 'admin'
-
-      - name: Run Train Classifier
-        run: |
-          cd ${{ github.workspace }}/retail_pg
-          .venv\Scripts\Activate.ps1  
+          .venv\Scripts\Activate.ps1  # Activate the virtual environment
+          pip install pandas scikit-learn # Install pandas and other dependencies
           python Train_Classifier.py
-          
-        env:
-          DB_HOST: localhost
-          DB_NAME: test_db
-          DB_USER: admin
-          DB_PASS: 'admin'
+        env:
+          DB_HOST: localhost
+          DB_NAME: test_db
+          DB_USER: admin
+          DB_PASS: 'admin'
 
 - name: Lint with flake8
-        run: |
-          cd ${{ github.workspace }}/retail_pg
-          .venv\Scripts\Activate.ps1 # Activate it
-          flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
-          flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+        run: |
+          cd ${{ github.workspace }}/retail_pg
+          .venv\Scripts\Activate.ps1 # Activate it
+          pip install flake8 # Install flake8
+          flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+          flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
