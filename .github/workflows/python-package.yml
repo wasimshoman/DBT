@@ -23,11 +23,18 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
+      - name: Cache dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/pip  # Path to the pip cache
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }} # Cache key
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          python -m pip install flake8 pytest psycopg2 pandas scikit-learn dbt-core
-          if (Test-Path requirements.txt) { pip install -r requirements.txt }
+          python -m pip install -r requirements.txt
 
       - name: Set up PostgreSQL
         uses: ankane/setup-postgres@v1
@@ -35,15 +42,12 @@ jobs:
           postgres-version: '14'
           database: test_db  # Correct parameter name
           username: ${{ secrets.DB_USER }}
-          password: ${{ secrets.DB_PASS }}  # Use secret, correct parameter name
-          
+          password: ${{ secrets.DB_PASS }}           
 
       - name: Create Database and User
         run: |
-          psql -U postgres -d postgres -w -c "CREATE DATABASE test_db;" || true  # Handle existing database
-          psql -U postgres -d postgres -w -c "CREATE USER IF NOT EXISTS ${{ secrets.DB_USER }} WITH PASSWORD '${{ secrets.DB_PASS }}';"
-          psql -U postgres -d postgres -w -c "GRANT ALL PRIVILEGES ON DATABASE test_db TO ${{ secrets.DB_USER }};"
-          psql -U postgres -d postgres -w -c "ALTER DATABASE test_db OWNER TO ${{ secrets.DB_USER }};"
+
+          psql -U postgres -d postgres -w -c "GRANT ALL PRIVILEGES ON DATABASE test_db TO admin;"
 
 
 
