@@ -19,7 +19,7 @@ jobs:
           fetch-depth: 0  # If needed
 
       - name: List Files and Directories (CRITICAL DEBUGGING STEP - Windows)
-        run: dir /s
+        run: cmd /c 'dir /s'
 
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v3
