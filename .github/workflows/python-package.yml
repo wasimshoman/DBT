@@ -40,10 +40,10 @@ jobs:
 
       - name: Create Database and User
         run: |
-          psql -U postgres -d postgres -w -c "CREATE DATABASE IF NOT EXISTS test_db;"
-          psql -U postgres -d postgres -w -c "CREATE USER IF NOT EXISTS admin WITH PASSWORD '${{ secrets.DB_PASS }}';"
-          psql -U postgres -d postgres -w -c "GRANT ALL PRIVILEGES ON DATABASE test_db TO app_user;"
-          psql -U postgres -d postgres -w -c "ALTER DATABASE test_db OWNER TO admin;" # Make app_user the owner
+          psql -U postgres -d postgres -w -c "CREATE DATABASE test_db;" || true  # Handle existing database
+          psql -U postgres -d postgres -w -c "CREATE USER IF NOT EXISTS ${{ secrets.DB_USER }} WITH PASSWORD '${{ secrets.DB_PASS }}';"
+          psql -U postgres -d postgres -w -c "GRANT ALL PRIVILEGES ON DATABASE test_db TO ${{ secrets.DB_USER }};"
+          psql -U postgres -d postgres -w -c "ALTER DATABASE test_db OWNER TO ${{ secrets.DB_USER }};"
 
 
 
