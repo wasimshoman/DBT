@@ -1,3 +1,5 @@
+yaml
+Copy
 name: Python package
 
 on:
@@ -14,7 +16,36 @@ jobs:
         python-version: ['3.12']
 
     steps:
-      # ... (checkout, setup Python, caching, install dependencies - same as before)
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v3
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Cache dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install requests psycopg2
+          if (Test-Path requirements.txt) { pip install -r requirements.txt }
+
+      - name: Set up PostgreSQL
+        uses: ankane/setup-postgres@v1
+        with:
+          postgres-version: '14'
+
+
+          
 
       - name: Set up PostgreSQL
         uses: ankane/setup-postgres@v1
@@ -26,15 +57,15 @@ jobs:
         run: |
           psql -U postgres -d postgres -w -c "CREATE DATABASE test_db;" 2>NUL || true
 
-          # Check if the user exists (PowerShell version - improved)
-          $userExists = (psql -U postgres -d postgres -w -t -c "SELECT 1 FROM pg_roles WHERE rolname = 'admin';" | Convert-String) -ne ""
+          $userExists = (psql -U postgres -d postgres -w -t -c "SELECT 1 FROM pg_roles WHERE rolname = 'admin';" 2>&1 | Select-String -Quiet)
 
           if (-not $userExists) {
-            psql -U postgres -d postgres -w -c "CREATE ROLE admin WITH LOGIN PASSWORD 'admin';" # Create with LOGIN
+            psql -U postgres -d postgres -w -c "CREATE ROLE admin WITH LOGIN PASSWORD 'admin';"
           }
 
           psql -U postgres -d postgres -w -c "GRANT ALL PRIVILEGES ON DATABASE test_db TO admin;"
           psql -U postgres -d postgres -w -c "ALTER DATABASE test_db OWNER TO admin;"
+
 
 
       - name: Run API Caller
@@ -86,10 +117,10 @@ jobs:
           DB_USER: admin
           DB_PASS: 'admin'
 
-      - name: Lint with flake8
+    - name: Lint with flake8
         run: |
           cd ${{ github.workspace }}/retail_pg
-          .venv\Scripts\Activate.ps1  # Activate (REUSE)
+          .venv\Scripts\Activate.ps1 # Activate it
           pip install flake8 # Install flake8
           flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
           flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
