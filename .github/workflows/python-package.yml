@@ -18,8 +18,8 @@ jobs:
         with:
           fetch-depth: 0  # If needed
 
-      - name: List Files and Directories (Debugging - Highly Recommended)
-        run: ls -alR  # or 'dir /s' on Windows
+      - name: List Files and Directories (CRITICAL DEBUGGING STEP - Windows)
+        run: dir /s
 
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v3
