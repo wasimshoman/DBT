@@ -10,25 +10,48 @@ jobs:
   build:
     runs-on: windows-latest
     strategy:
-      fail-fast: false
       matrix:
-        python-version: ["3.12"]
+        python-version: ['3.12']
 
     steps:
-    - uses: actions/checkout@v4
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v3
-      with:
-        python-version: ${{ matrix.python-version }}
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        python -m pip install flake8 pytest
-        if (Test-Path requirements.txt) { pip install -r requirements.txt }
-    - name: Lint with flake8
-      run: |
-        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
-        flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
-    - name: Test with pytest
-      run: |
-        pytest
+      - uses: actions/checkout@v4
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v3
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install flake8 pytest psycopg2 pandas scikit-learn  # Add necessary packages
+          if (Test-Path requirements.txt) { pip install -r requirements.txt }
+      - name: Set up PostgreSQL
+        uses: ankane/setup-postgres@v1
+        with:
+          postgres-version: '14' # or your desired version
+          db-name: 'test_db'
+          db-user: 'admin'
+          db-pass: 'admin'
+      - name: Run API Caller
+        run: python APIcaller.py
+        env: # Set environment variables for DB connection
+          DB_HOST: localhost
+          DB_NAME: test_db
+          DB_USER: admin
+          DB_PASS: admin
+      - name: Run DBT Models (requires dbt installation)
+        run: |
+          pip install dbt-core # Install dbt
+          dbt run
+      - name: Run Train Classifier
+        run: python Train_Classifier.py
+        env: # Set environment variables for DB connection
+          DB_HOST: localhost
+          DB_NAME: test_db
+          DB_USER: admin
+          DB_PASS: admin
+      - name: Lint with flake8
+        run: |
+          flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+          flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+      - name: Test with pytest
+        run: pytest
