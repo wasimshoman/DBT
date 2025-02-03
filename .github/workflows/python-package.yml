@@ -16,10 +16,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 0  
-
-      - name: List Files and Directories (CRITICAL DEBUGGING STEP - Windows)
-        run: cmd /c 'dir /s'
+          fetch-depth: 0
 
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v3
@@ -36,41 +33,46 @@ jobs:
         uses: ankane/setup-postgres@v1
         with:
           postgres-version: '14'
-          db-name: 'test_db'
-          db-user: 'admin'
-          db-pass: 'admin'
+          database: test_db  # Correct parameter name
+          username: ${{ secrets.DB_USER }}
+          password: ${{ secrets.DB_PASS }}  # Use secret, correct parameter name
+          
+      - name: Create Database
+        run: |
+          psql -U postgres -d postgres -w -c "CREATE DATABASE test_db;" # Create the database
+          # Or, if you have a specific user that should own the DB:
+          # psql -U postgres -d postgres -w -c "CREATE DATABASE test_db OWNER admin;"
+
 
       - name: Run API Caller
         run: |
-          cd ${{ github.workspace }}/retail_pg  
+          cd ${{ github.workspace }}/retail_pg
           python APIcaller.py
-        env: # Set environment variables for DB connection
+        env:
           DB_HOST: localhost
           DB_NAME: test_db
-          DB_USER: ${{ secrets.DB_USER }} 
-          DB_PASS: ${{ secrets.DB_PASS }} 
+          DB_USER: ${{ secrets.DB_USER }}
+          DB_PASS: ${{ secrets.DB_PASS }}
 
       - name: Run DBT Models
         run: |
-          cd ${{ github.workspace }}/retail_pg  
-          python Train_Classifier.py
+          cd ${{ github.workspace }}/retail_pg
+          dbt run  # No need to call python here
 
       - name: Run Train Classifier
         run: |
-          cd ${{ github.workspace }}/retail_pg  
+          cd ${{ github.workspace }}/retail_pg
           python Train_Classifier.py
-        env: # Set environment variables for DB connection
+        env:
           DB_HOST: localhost
           DB_NAME: test_db
-          DB_USER: ${{ secrets.DB_USER }} 
-          DB_PASS: ${{ secrets.DB_PASS }} 
+          DB_USER: ${{ secrets.DB_USER }}
+          DB_PASS: ${{ secrets.DB_PASS }}
 
       - name: Lint with flake8
         run: |
           flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
           flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
 
-
-        
-        
- 
+      - name: Test with pytest
+        run: pytest  # Run from the root of the repository or specify path
