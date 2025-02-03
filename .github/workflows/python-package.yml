@@ -41,10 +41,18 @@ jobs:
         uses: ankane/setup-postgres@v1
         with:
           postgres-version: '14'
-      - name: Create Database and User # <--- Corrected
+      - name: Create Database and User
         run: |
           psql -U postgres -d postgres -w -c "CREATE DATABASE test_db;" 2>NUL || true
-          psql -U postgres -d postgres -w -c "CREATE ROLE IF NOT EXISTS app_user WITH LOGIN PASSWORD '${{ secrets.DB_PASS }}';" # Use CREATE ROLE
+          psql -U postgres -d postgres -w -c "
+            DO $$
+            BEGIN
+              IF NOT EXISTS (SELECT FROM pg_catalog.pg_roles WHERE rolname = 'app_user') THEN
+                CREATE USER app_user WITH PASSWORD '${{ secrets.DB_PASS }}';
+              END IF;
+            END
+            $$;
+          "
           psql -U postgres -d postgres -w -c "GRANT ALL PRIVILEGES ON DATABASE test_db TO app_user;"
           psql -U postgres -d postgres -w -c "ALTER DATABASE test_db OWNER TO app_user;"
 
