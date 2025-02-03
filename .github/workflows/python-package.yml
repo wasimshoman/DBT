@@ -75,7 +75,7 @@ jobs:
           cd ${{ github.workspace }}/retail_pg
           python -m venv .venv
           .venv\Scripts\Activate.ps1
-          pip install dbt-core
+          pip install dbt-core dbt-postgres
 
           # Create dbt profiles directory
           mkdir -p $env:USERPROFILE\.dbt # or mkdir -p $env:HOME\.dbt for consistency
