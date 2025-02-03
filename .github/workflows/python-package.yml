@@ -41,8 +41,9 @@ jobs:
           db-pass: 'admin'
 
       - name: Run API Caller
-        working-directory: ${{ github.workspace }}/DBT/retail_pg  # <--- Use github.workspace
-        run: python APIcaller.py
+        run: |
+          cd ${{ github.workspace }}/DBT/retail_pg  # Absolute path using github.workspace
+          python APIcaller.py
         env: # Set environment variables for DB connection
           DB_HOST: localhost
           DB_NAME: test_db
@@ -50,12 +51,14 @@ jobs:
           DB_PASS: admin
 
       - name: Run DBT Models
-        working-directory: ${{ github.workspace }}/DBT/retail_pg  # <--- Use github.workspace
-        run: dbt run
+        run: |
+          cd ${{ github.workspace }}/DBT/retail_pg  # Absolute path using github.workspace
+          dbt run
 
       - name: Run Train Classifier
-        working-directory: ${{ github.workspace }}/DBT/retail_pg  # <--- Use github.workspace
-        run: python Train_Classifier.py
+        run: |
+          cd ${{ github.workspace }}/DBT/retail_pg  # Absolute path using github.workspace
+          python Train_Classifier.py
         env: # Set environment variables for DB connection
           DB_HOST: localhost
           DB_NAME: test_db
