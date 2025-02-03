@@ -43,15 +43,14 @@ jobs:
         run: |
           psql -U postgres -d postgres -w -c "CREATE DATABASE test_db;" 2>NUL || true
 
-          # Check if the user exists (PowerShell version - improved)
-          $userExists = (psql -U postgres -d postgres -w -t -c "SELECT 1 FROM pg_roles WHERE rolname = 'admin';" 2>&1 | Select-String -Quiet -Pattern "1") # Add a pattern
-
+          $userExists = psql -U postgres -d postgres -w -t -c "SELECT 1 FROM pg_roles WHERE rolname = 'admin';"
           if (-not $userExists) {
-            psql -U postgres -d postgres -w -c "CREATE ROLE admin WITH LOGIN PASSWORD 'admin';" # Create with LOGIN
+            psql -U postgres -d postgres -w -c "CREATE USER admin WITH PASSWORD 'admin';"
           }
 
           psql -U postgres -d postgres -w -c "GRANT ALL PRIVILEGES ON DATABASE test_db TO admin;"
           psql -U postgres -d postgres -w -c "ALTER DATABASE test_db OWNER TO admin;"
+
       - name: Run API Caller
         run: |
           cd ${{ github.workspace }}/retail_pg
