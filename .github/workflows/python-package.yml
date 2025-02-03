@@ -38,10 +38,6 @@ jobs:
         uses: ankane/setup-postgres@v1
         with:
           postgres-version: "14"
-      - name: Set up PostgreSQL
-        uses: ankane/setup-postgres@v1
-        with:
-          postgres-version: "14"
       - name: Create Database and User
         shell: pwsh
         run: >
