@@ -40,16 +40,16 @@ jobs:
         uses: ankane/setup-postgres@v1
         with:
           postgres-version: '14'
-          database: test_db  # Correct parameter name
-          username: ${{ secrets.DB_USER }}
-          password: ${{ secrets.DB_PASS }}           
+          database: postgres
+          username: postgres # Initial connection user
+          password: ${{ secrets.POSTGRES_PASSWORD }} # Password for postgres
 
       - name: Create Database and User
         run: |
-
-          psql -U postgres -d postgres -w -c "GRANT ALL PRIVILEGES ON DATABASE test_db TO admin;"
-
-
+          psql -U postgres -d postgres -w -c "CREATE DATABASE test_db;" || true
+          psql -U postgres -d postgres -w -c "CREATE USER IF NOT EXISTS app_user WITH PASSWORD '${{ secrets.DB_PASS }}';" # Password for app_user
+          psql -U postgres -d postgres -w -c "GRANT ALL PRIVILEGES ON DATABASE test_db TO app_user;"
+          psql -U postgres -d postgres -w -c "ALTER DATABASE test_db OWNER TO app_user;"
 
       - name: Run API Caller
         run: |
@@ -58,7 +58,7 @@ jobs:
         env:
           DB_HOST: localhost
           DB_NAME: test_db
-          DB_USER: ${{ secrets.DB_USER }}
+          DB_USER: app_user # Consistent user
           DB_PASS: ${{ secrets.DB_PASS }}
 
       - name: Run DBT Models
