@@ -23,14 +23,14 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-     - name: Cache dependencies
-        uses: actions/cache@v3
-        with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-pip-
-
+      - name: Cache dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+            
       - name: Create and Activate Virtual Environment & Install Dependencies (ONCE)
         run: |
           cd ${{ github.workspace }}/retail_pg
