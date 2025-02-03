@@ -42,7 +42,7 @@ jobs:
 
       - name: Run API Caller
         run: |
-          cd ${{ github.workspace }}/DBT/retail_pg  # Absolute path using github.workspace
+          cd ${{ github.workspace }}/retail_pg  # <--- Corrected Path!
           python APIcaller.py
         env: # Set environment variables for DB connection
           DB_HOST: localhost
@@ -52,8 +52,8 @@ jobs:
 
       - name: Run DBT Models
         run: |
-          cd ${{ github.workspace }}/DBT/retail_pg  # Absolute path using github.workspace
-          dbt run
+          cd ${{ github.workspace }}/retail_pg  # <--- Corrected Path!
+          python Train_Classifier.py
 
       - name: Run Train Classifier
         run: |
