@@ -73,6 +73,7 @@ jobs:
       - name: Run DBT Models
         run: |
           cd ${{ github.workspace }}/retail_pg
+          .venv\Scripts\Activate.ps1  # Activate the virtual environment
           dbt run
         env:
           DB_HOST: localhost
