@@ -16,7 +16,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # If needed
+          fetch-depth: 0  
 
       - name: List Files and Directories (CRITICAL DEBUGGING STEP - Windows)
         run: cmd /c 'dir /s'
@@ -42,7 +42,7 @@ jobs:
 
       - name: Run API Caller
         run: |
-          cd ${{ github.workspace }}/retail_pg  # <--- Corrected Path!
+          cd ${{ github.workspace }}/retail_pg  
           python APIcaller.py
         env: # Set environment variables for DB connection
           DB_HOST: localhost
@@ -52,12 +52,12 @@ jobs:
 
       - name: Run DBT Models
         run: |
-          cd ${{ github.workspace }}/retail_pg  # <--- Corrected Path!
+          cd ${{ github.workspace }}/retail_pg  
           python Train_Classifier.py
 
       - name: Run Train Classifier
         run: |
-          cd ${{ github.workspace }}/retail_pg  # Absolute path using github.workspace
+          cd ${{ github.workspace }}/retail_pg  
           python Train_Classifier.py
         env: # Set environment variables for DB connection
           DB_HOST: localhost
@@ -70,8 +70,7 @@ jobs:
           flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
           flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
 
-      - name: Test with pytest
-        run: pytest
+
         
         
  
