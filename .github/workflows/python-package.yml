@@ -73,7 +73,9 @@ jobs:
       - name: Run DBT Models
         run: |
           cd ${{ github.workspace }}/retail_pg
-          & .venv\Scripts\Activate.ps1 # Use the call operator
+          python -m venv .venv  # Create the virtual environment
+          .venv\Scripts\Activate.ps1 # Activate it
+          pip install dbt-core # Install dbt in the virtual environment
           dbt run
         env:
           DB_HOST: localhost
