@@ -73,9 +73,28 @@ jobs:
       - name: Run DBT Models
         run: |
           cd ${{ github.workspace }}/retail_pg
-          python -m venv .venv  # Create the virtual environment
-          .venv\Scripts\Activate.ps1 # Activate it
-          pip install dbt-core # Install dbt in the virtual environment
+          python -m venv .venv
+          .venv\Scripts\Activate.ps1
+          pip install dbt-core
+
+          # Create dbt profiles directory
+          mkdir -p $env:USERPROFILE\.dbt # or mkdir -p $env:HOME\.dbt for consistency
+
+          # Create dbt profiles.yml file (replace with your actual connection details)
+          echo "
+          your_profile_name:  # Replace with your profile name
+            target: dev
+            outputs:
+              dev:
+                type: postgres
+                host: localhost
+                database: test_db
+                schema: public  # Or your schema
+                user: admin
+                password: 'admin'
+                port: 5432
+          " | Out-File -Encoding utf8 $env:USERPROFILE\.dbt\profiles.yml  # or $env:HOME\.dbt\profiles.yml
+
           dbt run
         env:
           DB_HOST: localhost
