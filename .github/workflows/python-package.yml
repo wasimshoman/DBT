@@ -40,20 +40,17 @@ jobs:
           postgres-version: "14"
       - name: Create Database and User
         shell: pwsh
-        run: >
+        run: |
           psql -U postgres -d postgres -w -c "CREATE DATABASE test_db;" 2>NUL || true
 
-
-          $userExists = (psql -U postgres -d postgres -w -t -c "SELECT 1 FROM pg_roles WHERE rolname = 'admin';" 2>&1 | Select-String -Quiet)
-
+          # Check if the user exists (PowerShell version - improved)
+          $userExists = (psql -U postgres -d postgres -w -t -c "SELECT 1 FROM pg_roles WHERE rolname = 'admin';" 2>&1 | Select-String -Quiet -Pattern "1") # Add a pattern
 
           if (-not $userExists) {
-            psql -U postgres -d postgres -w -c "CREATE ROLE admin WITH LOGIN PASSWORD 'admin';"
+            psql -U postgres -d postgres -w -c "CREATE ROLE admin WITH LOGIN PASSWORD 'admin';" # Create with LOGIN
           }
 
-
           psql -U postgres -d postgres -w -c "GRANT ALL PRIVILEGES ON DATABASE test_db TO admin;"
-
           psql -U postgres -d postgres -w -c "ALTER DATABASE test_db OWNER TO admin;"
       - name: Run API Caller
         run: |
