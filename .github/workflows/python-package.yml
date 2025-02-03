@@ -51,7 +51,7 @@ jobs:
           $userExists = psql -U postgres -d postgres -w -t -c "SELECT 1 FROM pg_roles WHERE rolname = 'app_user';"
           if (-not $userExists) {
             # Create the user if it doesn't exist
-            psql -U postgres -d postgres -w -c "CREATE USER app_user WITH PASSWORD '${{ secrets.DB_PASS }}';"
+            psql -U postgres -d postgres -w -c "CREATE USER app_user WITH PASSWORD 'admin';"
           }
 
           # Grant privileges and alter ownership
@@ -68,8 +68,8 @@ jobs:
           DB_HOST: localhost
           DB_NAME: test_db
           DB_USER: app_user
-          DB_PASS: ${{ secrets.DB_PASS }}
-
+          DB_PASS: 'admin'
+          
       - name: Run DBT Models
         run: |
           cd ${{ github.workspace }}/retail_pg
@@ -79,7 +79,7 @@ jobs:
           DB_HOST: localhost
           DB_NAME: test_db
           DB_USER: app_user
-          DB_PASS: admin
+          DB_PASS: 'admin'
 
       - name: Run Train Classifier
         run: |
@@ -89,7 +89,7 @@ jobs:
           DB_HOST: localhost
           DB_NAME: test_db
           DB_USER: app_user
-          DB_PASS: admin
+          DB_PASS: 'admin'
 
       - name: Lint with flake8
         run: |
