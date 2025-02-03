@@ -50,8 +50,7 @@ jobs:
       - name: Run DBT Models and Tests
         run: |
           cd ${{ github.workspace }}/retail_pg
-          python -m venv .venv
-          .venv\Scripts\Activate.ps1
+          .venv\Scripts\Activate.ps1  # Activate (REUSE)
           pip install dbt-core dbt-postgres # Install dbt and adapter
           
           # Create dbt profiles directory (same as before)
@@ -74,28 +73,23 @@ jobs:
 
           dbt run
           dbt test # Run dbt tests
-        env:
-          DB_HOST: localhost
-          DB_NAME: test_db
-          DB_USER: admin
-          DB_PASS: 'admin'
-
+          
       - name: Run Train Classifier
         run: |
           cd ${{ github.workspace }}/retail_pg
-          .venv\Scripts\Activate.ps1  # Activate the virtual environment
-          pip install pandas scikit-learn # Install pandas and other dependencies
+          .venv\Scripts\Activate.ps1  # Activate (REUSE)
           python Train_Classifier.py
+          
         env:
           DB_HOST: localhost
           DB_NAME: test_db
           DB_USER: admin
           DB_PASS: 'admin'
 
-- name: Lint with flake8
+      - name: Lint with flake8
         run: |
           cd ${{ github.workspace }}/retail_pg
-          .venv\Scripts\Activate.ps1 # Activate it
+          .venv\Scripts\Activate.ps1  # Activate (REUSE)
           pip install flake8 # Install flake8
           flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
           flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
