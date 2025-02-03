@@ -32,6 +32,7 @@ jobs:
           db-user: 'admin'
           db-pass: 'admin'
       - name: Run API Caller
+        working-directory: ./DBT/retail_pg
         run: |
           cd DBT/retail_pg  # Change to the correct directory
           python APIcaller.py
@@ -45,6 +46,7 @@ jobs:
           pip install dbt-core # Install dbt
           dbt run
       - name: Run Train Classifier
+        working-directory: ./DBT/retail_pg
         run: python Train_Classifier.py
         env: # Set environment variables for DB connection
           DB_HOST: localhost
