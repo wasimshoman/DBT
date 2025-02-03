@@ -43,13 +43,10 @@ jobs:
           postgres-version: '14'
       - name: Create Database and User
         run: |
-          psql -U postgres -d postgres -c "CREATE DATABASE test_db;" || true
-          psql -U postgres -d postgres -c "CREATE USER app_user WITH PASSWORD 'admin';" || true
-          psql -U postgres -d postgres -c "GRANT ALL PRIVILEGES ON DATABASE test_db TO app_user;"
-          psql -U postgres -d postgres -c "ALTER DATABASE test_db OWNER TO app_user;"
-
-      - name: Test Connection with psql
-        run: psql -h localhost -U app_user -d test_db -w -c "SELECT 1;"
+          psql -U postgres -d postgres -w -c "CREATE DATABASE test_db;" 2>NUL || true
+          psql -U postgres -d postgres -w -c "CREATE USER IF NOT EXISTS app_user WITH PASSWORD '${{ secrets.DB_PASS }}';"
+          psql -U postgres -d postgres -w -c "GRANT ALL PRIVILEGES ON DATABASE test_db TO app_user;"
+          psql -U postgres -d postgres -w -c "ALTER DATABASE test_db OWNER TO app_user;"
 
       - name: Run API Caller
         run: |
@@ -59,8 +56,7 @@ jobs:
           DB_HOST: localhost
           DB_NAME: test_db
           DB_USER: app_user
-          DB_PASS: admin
-          
+          DB_PASS: ${{ secrets.DB_PASS }}
 
       - name: Run DBT Models
         run: |
