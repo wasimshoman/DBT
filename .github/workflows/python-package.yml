@@ -37,8 +37,8 @@ jobs:
           python -m venv .venv  # Create virtual environment
           .venv\Scripts\Activate.ps1  # Activate it
           pip install --upgrade pip
-          pip install requests psycopg2 flake8 pytest dbt-core dbt-postgres pandas scikit-learn # Install ALL dependencies at once
-          if (Test-Path requirements.txt) { pip install -r requirements.txt } # install from requirements.txt if available
+          pip install requests psycopg2 flake8 pytest dbt-core dbt-postgres pandas scikit-learn 
+          if (Test-Path requirements.txt) { pip install -r requirements.txt } 
 
 
       - name: Set up PostgreSQL
