@@ -36,11 +36,25 @@ jobs:
           python -m pip install --upgrade pip
           if (Test-Path requirements.txt) { pip install -r requirements.txt }
 
+      - name: Set up PostgreSQL
+        uses: ankane/setup-postgres@v1
+        with:
+          postgres-version: '14'
+
+      - name: Add PostgreSQL to PATH
+        shell: pwsh
+        run: |
+          $postgresPath = "C:\Program Files\PostgreSQL\14\bin"
+          $env:PATH = "$postgresPath;$env:PATH"
+          Write-Host "Updated PATH: $env:PATH"
+
       - name: Start PostgreSQL
+        shell: pwsh
         run: |
           pg_ctl start
 
       - name: Create Database and User
+        shell: pwsh
         env:
           PGUSER: postgres
           PGPASSWORD: postgres
@@ -49,7 +63,6 @@ jobs:
           psql -c "CREATE USER IF NOT EXISTS app_user WITH PASSWORD '${{ secrets.DB_PASS }}';" -U postgres
           psql -c "GRANT ALL PRIVILEGES ON DATABASE test_db TO app_user;" -U postgres
           psql -c "ALTER DATABASE test_db OWNER TO app_user;" -U postgres
-
       - name: Run API Caller
         run: |
           cd ${{ github.workspace }}/retail_pg
