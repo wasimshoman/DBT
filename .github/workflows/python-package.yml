@@ -42,10 +42,15 @@ jobs:
           postgres-version: '14'
       - name: Create Database and User
         run: |
-          psql -U postgres -d postgres -w -c "CREATE DATABASE test_db;" 2>NUL || true  # Correct database creation
-          psql -U postgres -d postgres -w -c "CREATE USER IF NOT EXISTS app_user WITH PASSWORD '${{ secrets.DB_PASS }}';" # Use DB_PASS
-          psql -U postgres -d postgres -w -c "GRANT ALL PRIVILEGES ON DATABASE test_db TO app_user;"
-          psql -U postgres -d postgres -w -c "ALTER DATABASE test_db OWNER TO app_user;"
+          psql -U postgres -d postgres -c "CREATE DATABASE test_db;" || true
+          psql -U postgres -d postgres -c "
+          DO \$\$ BEGIN
+              IF NOT EXISTS (SELECT FROM pg_roles WHERE rolname='app_user') THEN
+                  CREATE USER app_user WITH PASSWORD '${{ secrets.DB_PASS }}';
+              END IF;
+          END \$\$;"
+          psql -U postgres -d postgres -c "GRANT ALL PRIVILEGES ON DATABASE test_db TO app_user;"
+          psql -U postgres -d postgres -c "ALTER DATABASE test_db OWNER TO app_user;"
 
       - name: Run API Caller
         run: |
