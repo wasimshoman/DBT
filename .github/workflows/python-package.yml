@@ -48,6 +48,8 @@ jobs:
           psql -U postgres -d postgres -c "GRANT ALL PRIVILEGES ON DATABASE test_db TO app_user;"
           psql -U postgres -d postgres -c "ALTER DATABASE test_db OWNER TO app_user;"
 
+      - name: Test Connection with psql
+        run: psql -h localhost -U app_user -d test_db -w -c "SELECT 1;"
 
       - name: Run API Caller
         run: |
