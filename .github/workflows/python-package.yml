@@ -59,11 +59,6 @@ jobs:
           cd ${{ github.workspace }}/retail_pg
           .venv\Scripts\Activate.ps1  
           python APIcaller.py
-        env:
-          DB_HOST: localhost
-          DB_NAME: test_db
-          DB_USER: admin
-          DB_PASS: admin
       - name: Run DBT Models and Tests
         run: |
           cd ${{ github.workspace }}/retail_pg
@@ -84,28 +79,14 @@ jobs:
           " | Out-File -Encoding utf8 $env:USERPROFILE\.dbt\profiles.yml
           dbt run
           dbt test
-        env:
-          DB_HOST: localhost
-          DB_NAME: test_db
-          DB_USER: admin
-          DB_PASS: 'admin'
       - name: Run Train Classifier
         run: |
           cd ${{ github.workspace }}/retail_pg
           .venv\Scripts\Activate.ps1 
           python Train_Classifier.py
-        env:
-          DB_HOST: localhost
-          DB_NAME: test_db
-          DB_USER: admin
-          DB_PASS: admin
       - name: Lint with flake8
-        run: >
+        run: |
           cd ${{ github.workspace }}/retail_pg
-
-          .venv\Scripts\Activate.ps1 # Activate it
-
-
-          flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
-
-          flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+          .venv\Scripts\Activate.ps1
+          flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics --exclude=.venv
+          flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics --exclude=.venv
