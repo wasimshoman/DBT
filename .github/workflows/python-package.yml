@@ -29,7 +29,7 @@ jobs:
           key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
           restore-keys: |
             ${{ runner.os }}-pip-
-      - name: Create and Activate Virtual Environment & Install Dependencies (ONCE - Corrected)
+      - name: Create and Activate Virtual Environment & Install Dependencies
         run: |
           cd ${{ github.workspace }}/retail_pg
           python -m venv .venv
