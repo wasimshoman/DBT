@@ -35,7 +35,7 @@ jobs:
           python -m venv .venv
           .venv\Scripts\Activate.ps1
           pip install --upgrade pip
-          pip install flake8 # Install flake8
+          pip install flake8 requests
           if (Test-Path requirements.txt) { pip install -r requirements.txt }
       - name: Set up PostgreSQL
         uses: ankane/setup-postgres@v1
