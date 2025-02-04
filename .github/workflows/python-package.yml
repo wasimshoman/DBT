@@ -29,10 +29,13 @@ jobs:
           key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
           restore-keys: |
             ${{ runner.os }}-pip-
-      - name: Install dependencies
+      - name: Create and Activate Virtual Environment & Install Dependencies (ONCE)
         run: |
-          python -m pip install --upgrade pip
-          python -m pip install requests psycopg2
+          cd ${{ github.workspace }}/retail_pg
+          python -m venv .venv
+          .venv\Scripts\Activate.ps1
+          pip install --upgrade pip
+          pip install flake8 # Install flake8
           if (Test-Path requirements.txt) { pip install -r requirements.txt }
       - name: Set up PostgreSQL
         uses: ankane/setup-postgres@v1
@@ -65,7 +68,6 @@ jobs:
           cd ${{ github.workspace }}/retail_pg
           python -m venv .venv
           .venv\Scripts\Activate.ps1
-          pip install dbt-core dbt-postgres # Install dbt and adapter
           mkdir -p $env:USERPROFILE\.dbt
           echo "
           retail_pg:
@@ -90,8 +92,7 @@ jobs:
       - name: Run Train Classifier
         run: |
           cd ${{ github.workspace }}/retail_pg
-          .venv\Scripts\Activate.ps1  # Activate the virtual environment
-          pip install pandas scikit-learn # Install pandas and other dependencies
+          .venv\Scripts\Activate.ps1 
           python Train_Classifier.py
         env:
           DB_HOST: localhost
@@ -104,7 +105,6 @@ jobs:
 
           .venv\Scripts\Activate.ps1 # Activate it
 
-          pip install flake8 # Install flake8
 
           flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
 
