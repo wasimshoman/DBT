@@ -7,7 +7,7 @@ import pandas as pd
 from sklearn.cluster import KMeans
 from sklearn.preprocessing import StandardScaler
 import psycopg2
-from psycopg2 import sql
+from psycopg2 import sql, extras
 import logging
 
 # logging
@@ -23,66 +23,61 @@ conn_params = {
     'port': 5432
 }
 try:
-    # connect to the OBT_starships database
     with psycopg2.connect(**conn_params) as conn:
         with conn.cursor() as cursor:
-            # Load data from the table
+            # Load data and calculate *class* averages
             query = """
                 SELECT
-                    starship_id,
-                    starship_name,
-                    cost_in_credits,
-                    crew,
-                    passengers,
-                    max_atmosphering_speed,
-                    length,
-                    starship_group as starship_group_manually
+                    starship_class,  -- Group by starship class
+                    AVG(cost_in_credits) AS avg_cost_in_credits,
+                    AVG(crew) AS avg_crew,
+                    AVG(passengers) AS avg_passengers,
+                    AVG(max_atmosphering_speed) AS avg_max_atmosphering_speed,
+                    AVG(length) AS avg_length
                 FROM
                     public."OBT_starships"
                 WHERE cost_in_credits <> 0
+                GROUP BY starship_class
             """
             df = pd.read_sql(query, conn)
 
-            # Get only relevant features
-            features = ['cost_in_credits', 'crew', 'passengers', 'max_atmosphering_speed', 'length']
-            X = df[features].fillna(0)  # important for the classifier to work; otherwise, it will throw an error
+            # Features for clustering
+            features = ['avg_cost_in_credits', 'avg_crew', 'avg_passengers', 'avg_max_atmosphering_speed', 'avg_length']
+            X = df[features].fillna(0)  # Handle missing values (if any after averaging)
 
-            # Create and train model
-            scaler = StandardScaler()  # ensures all features are on a similar scale.
-            kmeans = KMeans(n_clusters=3, random_state=42)  # models will be grouped into 3 clusters (0, 1, 2). 
+            # Create and train KMeans model
+            scaler = StandardScaler()
+            kmeans = KMeans(n_clusters=3, random_state=42)
             df['cluster'] = kmeans.fit_predict(scaler.fit_transform(X))
 
-            # Save results to database
-            # Drop the existing table if it exists
-            # Create a new table
+            # Save results to the database (using bulk insert)
             create_table_query = """
-            DROP TABLE IF EXISTS starship_clusters;
+                DROP TABLE IF EXISTS starship_clusters;
                 CREATE TABLE starship_clusters (
-                    starship_id INT PRIMARY KEY,
+                    starship_class VARCHAR(255) PRIMARY KEY,  -- Use starship_class as primary key
                     cluster INT
                 );
             """
             cursor.execute(create_table_query)
 
-            # Insert data into the new table
             insert_query = sql.SQL("""
-                INSERT INTO starship_clusters (starship_id, cluster)
-                VALUES (%s, %s);
+                INSERT INTO starship_clusters (starship_class, cluster)
+                VALUES %s
+                ON CONFLICT (starship_class) DO UPDATE SET cluster = EXCLUDED.cluster;
             """)
-            for _, row in df[['starship_id', 'cluster']].iterrows():
-                starship_id = int(row['starship_id'])
-                cluster = int(row['cluster'])
-                cursor.execute(insert_query, (starship_id, cluster))
+
+            values_to_insert = list(df[['starship_class', 'cluster']].itertuples(index=False, name=None))
+            extras.execute_values(cursor, insert_query.as_string(conn), values_to_insert)
+
 
             conn.commit()
-            logging.info(f"Success! Saved {len(df)} clusters to database")
+            logging.info(f"Success! Saved {len(df)} starship class clusters to database")
 
 except Exception as e:
-    print(f"Error: {e}")
+    logging.error(f"Error: {e}")
     if 'conn' in locals():
         conn.rollback()
 finally:
-    # Close the database connection
     if 'cursor' in locals():
         cursor.close()
     if 'conn' in locals():

@@ -21,12 +21,18 @@ select avg(selling_count) as avg from postgres.class_details
 select avg(avg_atmosphering_speed) as avg from postgres.class_details
 ```
 
-```classifications
+```classifications 
+-- manual classification
 select * from postgres.classifications
 
 ```
 ```total_sales
 select sum(selling_count) as total_sales from postgres.class_details
+```
+```ML_classifications 
+-- ML classification
+select * from postgres.starship_class_ML
+
 ```
 
 ``` KPIs
@@ -34,8 +40,6 @@ select sum(selling_count) as total_sales from postgres.class_details
 ```total_models
 select count(distinct starship_class) as total_models from postgres.class_details
 ```
-
-
 
 
 
@@ -60,7 +64,7 @@ Total distinct models : **<Value  data={total_models} value=total_models title="
 <DataTable data={classifications}/>
 
 # Grouping of starship models 
-
+## Manual groups
 <BarChart 
     data={starship_groups_agg}
     title = 'Starship model group selling count' 
@@ -80,6 +84,18 @@ Total distinct models : **<Value  data={total_models} value=total_models title="
     yAxisTitle="Credit"
     seriesOrder={['small starships','medium starships','large starships']}
 />
+
+## ML clustering
+<BarChart 
+    data={ML_classifications}
+    title = 'Starship model group selling count' 
+    x=starship_group
+    y=total_starships
+    xAxisTitle="Starship model group"
+    yAxisTitle="Amount sold"
+    seriesOrder={['small starships','medium starships','large starships']}
+/>
+
 
 # Details of starship groups
 <BarChart 
@@ -123,4 +139,5 @@ Total distinct models : **<Value  data={total_models} value=total_models title="
   xLabelWrap=true
   type=grouped
 />
+
 
