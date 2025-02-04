@@ -1,4 +1,4 @@
-#created: 2025 26 01
+# Created: 2025-01-26
 
 # cluster the starship models into 3 groups based on their attributes. 
 # results are saved to anew table (starship_clusters)
@@ -8,7 +8,6 @@ from sklearn.cluster import KMeans
 from sklearn.preprocessing import StandardScaler
 import psycopg2
 from psycopg2 import sql
-import numpy as np
 import logging
 
 # logging
@@ -46,11 +45,11 @@ try:
 
             # Get only relevant features
             features = ['cost_in_credits', 'crew', 'passengers', 'max_atmosphering_speed', 'length']
-            X = df[features].fillna(0)  # Important for the classifier to work otherwise it will throw an error
+            X = df[features].fillna(0)  # important for the classifier to work; otherwise, it will throw an error
 
             # Create and train model
-            scaler = StandardScaler() #ensures all features are on a similar scale.
-            kmeans = KMeans(n_clusters=3, random_state=42)   # models will be grouped into 3 clusters (o,1,2). 
+            scaler = StandardScaler()  # ensures all features are on a similar scale.
+            kmeans = KMeans(n_clusters=3, random_state=42)  # models will be grouped into 3 clusters (0, 1, 2). 
             df['cluster'] = kmeans.fit_predict(scaler.fit_transform(X))
 
             # Save results to database

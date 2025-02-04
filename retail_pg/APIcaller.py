@@ -1,11 +1,11 @@
-# 20250124 
-
-#call API download data, create a database if not excist, load data into database
+# 20250124
+# call API download data, create a database if not excist, load data into database
 # we download data about starships
-# all columns 
+# All columns 
 # ['name', 'model', 'manufacturer', 'cost_in_credits', 'length', 
 # 'max_atmosphering_speed', 'crew', 'passengers', 'cargo_capacity', 'consumables', 
-# 'hyperdrive_rating', 'MGLT', 'starship_class', 'pilots', 'films', 'created', 'edited', 'url']
+# 'hyperdrive_rating', 'MGLT', 'starship_class', 'pilots', 'films', 
+# 'created', 'edited', 'url']
 # metadata for the columns https://swapi.dev/documentation#starships
 
 
@@ -44,7 +44,7 @@ def to_title_case(text):
 
 # data cleaning and structuring
 # split manufacturer into two columns if multiple manufacturers exist
-#search for company suffex and add it to the first name
+# search for company suffex and add it to the first name
 def split_manufacturers(manufacturer):
     if not manufacturer:
         return None, None
@@ -53,18 +53,18 @@ def split_manufacturers(manufacturer):
     return manufacturers[0], manufacturers[1] if len(manufacturers) > 1 else None
 
 # process starship data
-#format data to the right structure
+# format data to the right structure
 def process_starship_data(starships):
     processed_starships = []
     for ship in starships:
         manufacturer1, manufacturer2 = split_manufacturers(ship.get('manufacturer'))
         processed_starships.append({
-            "name": to_title_case(ship.get('name')), # capitalize each word
+            "name": to_title_case(ship.get('name')),  # capitalize each word
             "model": ship.get('model').lower() if ship.get('model') else None,
             "manufacturer1": to_sentence_case(manufacturer1),
             "manufacturer2": to_sentence_case(manufacturer2),
             "cost_in_credits": int(ship['cost_in_credits']) if ship['cost_in_credits'] and ship['cost_in_credits'].isdigit() else None,
-            "length": float(ship['length'].replace(',', '')) if ship['length'] and ship['length'].replace(',', '').isdigit() else None,
+            "length": float(ship['length'].replace(',', '')) if ship['length'] and ship['length'].replace(',', '').replace('.', '', 1).isdigit() else None,            
             "max_atmosphering_speed": int(ship['max_atmosphering_speed']) if ship['max_atmosphering_speed'] and ship['max_atmosphering_speed'].isdigit() else None,
             "crew": int(ship['crew']) if ship['crew'] and ship['crew'].isdigit() else None,
             "passengers": int(ship['passengers']) if ship['passengers'] and ship['passengers'].isdigit() else None,
@@ -81,7 +81,7 @@ def save_starship_data_to_db(starships):
     try:
         with psycopg2.connect(host=DB_HOST, database=DB_NAME, user=DB_USER, password=DB_PASS) as connection:
             with connection.cursor() as cursor:
-                #  Drop and recreate dimension and fact tables + metadata table
+                # drop and recreate dimension and fact tables + metadata table
                 # 2 dimenstion tables (manufacturer and starship) 1 fact table, 1 metadata
                 cursor.execute("""
                 DROP TABLE IF EXISTS fact_starships CASCADE;
@@ -117,31 +117,33 @@ def save_starship_data_to_db(starships):
                 CREATE TABLE metadata (
                     column_name VARCHAR(255) PRIMARY KEY,
                     data_type VARCHAR(255),
-                    description TEXT
-                );
-                """)
+                    description TEXT,
+                    last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 
-                # insert data into dimension and fact tables + metadata
+                );
+            """)
+
+                 # insert data into dimension and fact tables + metadata
                 manufacturer_cache = {}
                 for ship in starships:
                     # insert into dim_manufacturers if not already inserted
                     manufacturer_key = (ship["manufacturer1"], ship["manufacturer2"])
                     if manufacturer_key not in manufacturer_cache:
                         cursor.execute("""
-                        INSERT INTO dim_manufacturers (manufacturer1, manufacturer2)
-                        VALUES (%s, %s) RETURNING id;
+                            INSERT INTO dim_manufacturers (manufacturer1, manufacturer2)
+                            VALUES (%s, %s) RETURNING id;
                         """, manufacturer_key)
                         manufacturer_id = cursor.fetchone()[0]
                         manufacturer_cache[manufacturer_key] = manufacturer_id
                     else:
                         manufacturer_id = manufacturer_cache[manufacturer_key]
 
-                    #  insert into dim_starships
+                    # insert into dim_starships
                     cursor.execute("""
-                    INSERT INTO dim_starships (
-                        name, model, starship_class, manufacturer_id
-                    ) VALUES (%s, %s, %s, %s) RETURNING id;
-                    """, (ship["name"], ship["model"], ship["starship_class"], manufacturer_id))
+                        INSERT INTO dim_starships (
+                            name, model, starship_class, manufacturer_id
+                        ) VALUES (%s, %s, %s, %s) RETURNING id;
+                    """, (ship["name"], ship["model"], ship["starship_class"], manufacturer_id)) 
                     starship_id = cursor.fetchone()[0]
 
                     # insert into fact_starships
@@ -156,7 +158,7 @@ def save_starship_data_to_db(starships):
                         ship["hyperdrive_rating"], ship["MGLT"]
                     ))
 
-                # Insert metadata into the table
+                # insert metadata into the table
                 # data copied from the website
                 metadata = [
                     ("name", "string", "The name of this starship. The common name, such as 'Death Star'."),
