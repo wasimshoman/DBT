@@ -29,14 +29,14 @@ jobs:
           key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
           restore-keys: |
             ${{ runner.os }}-pip-
-      - name: Create and Activate Virtual Environment & Install Dependencies (ONCE)
+      - name: Create and Activate Virtual Environment & Install Dependencies (ONCE - Corrected)
         run: |
           cd ${{ github.workspace }}/retail_pg
           python -m venv .venv
-          .venv\Scripts\Activate.ps1
+          .venv\Scripts\Activate.ps1  
           pip install --upgrade pip
-          pip install flake8 requests
-          if (Test-Path requirements.txt) { pip install -r requirements.txt }
+          if (Test-Path requirements.txt) { pip install -r requirements.txt } 
+          pip install flake8 requests  
       - name: Set up PostgreSQL
         uses: ankane/setup-postgres@v1
         with:
@@ -57,6 +57,7 @@ jobs:
       - name: Run API Caller
         run: |
           cd ${{ github.workspace }}/retail_pg
+          .venv\Scripts\Activate.ps1  
           python APIcaller.py
         env:
           DB_HOST: localhost
@@ -66,7 +67,6 @@ jobs:
       - name: Run DBT Models and Tests
         run: |
           cd ${{ github.workspace }}/retail_pg
-          python -m venv .venv
           .venv\Scripts\Activate.ps1
           mkdir -p $env:USERPROFILE\.dbt
           echo "
