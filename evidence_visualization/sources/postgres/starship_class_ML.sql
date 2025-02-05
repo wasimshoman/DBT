@@ -18,7 +18,7 @@ smc_starships_cte AS (
 SELECT
     cl.starship_class,
     smc.manual_starship_group,
-    cl.ml_starship_group
+    cl.ml_starship_group as ML_clustering
 FROM starship_clusters_cte AS cl 
 LEFT JOIN smc_starships_cte AS smc
 ON smc.starship_class = cl.starship_class;

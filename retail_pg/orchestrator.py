@@ -30,7 +30,7 @@ class DataPipeline:
         logging.info(f"Running {script_name}...")
         try:
             print(f"Running {script_name} in: {self.script_dir}")
-            subprocess.run([sys.executable, script_name], check=True, cwd=self.script_dir)
+            subprocess.run([sys.executable, script_name], check=True, cwd=self.script_dir) # without check=True, command and return a CompletedProcess object regardless of whether the command succeeded or failed. 
             logging.info(f"{script_name} executed successfully.")
         except subprocess.CalledProcessError as e:
             logging.error(f"Error running {script_name}: {e}")

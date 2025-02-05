@@ -25,7 +25,7 @@ conn_params = {
 try:
     with psycopg2.connect(**conn_params) as conn:
         with conn.cursor() as cursor:
-            # Load data and calculate *class* averages
+            # Load data and calculate each class averages because it has many ships
             query = """
                 SELECT
                     starship_class,  -- Group by starship class

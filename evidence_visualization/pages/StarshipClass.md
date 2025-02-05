@@ -85,18 +85,6 @@ Total distinct models : **<Value  data={total_models} value=total_models title="
     seriesOrder={['small starships','medium starships','large starships']}
 />
 
-## ML clustering
-<BarChart 
-    data={ML_classifications}
-    title = 'Starship model group selling count' 
-    x=starship_group
-    y=total_starships
-    xAxisTitle="Starship model group"
-    yAxisTitle="Amount sold"
-    seriesOrder={['small starships','medium starships','large starships']}
-/>
-
-
 # Details of starship groups
 <BarChart 
     title = 'Average selling price for starship models' 
@@ -141,3 +129,5 @@ Total distinct models : **<Value  data={total_models} value=total_models title="
 />
 
 
+## ML and Manual clustering
+<DataTable data={ML_classifications} />
