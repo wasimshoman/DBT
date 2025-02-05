@@ -11,7 +11,3 @@ This is the home page for the starship data documentation. Below are links to th
 - [Next Steps](NextStep.md)  
   Use the details to sell starship models
 ---
-
-
-
-# Knowit Solutions test
