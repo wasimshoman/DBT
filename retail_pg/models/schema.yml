@@ -123,7 +123,5 @@ models:
           - not_null
   - name: starship_group_analysis
     description: Details for each starship group the grouping happened with arbitrarry values refer to starship_model_classification model for more details
-  - name: top_classes
-    description: Identifies the top 5 selling starship classes
   - name: top_manufacturers_by_revenue
     description: revenue from each starship the contributed in building for each manufacturer
